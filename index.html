@@ -7231,20 +7231,29 @@ h3 {
   var wallH = (phi) => 8 + (WALL_H - 8) * smooth(0.6, 1.02, Math.abs(angDiff(phi, 0)));
   var A0 = GAP;
   var A1 = P2 * 2 - GAP;
+  var MAN = 1.85;
   var SEC = [
-    { r0: 209, y0: 24, n: 5, d: 9, h: 4.6, aisle: 0.5 },
+    { r0: 207, y0: 24, n: 3, d: 14, h: 8.2, aisle: 0.5 },
     // 1층: 귀족석 (대리석)
-    { r0: 261.5, y0: 55.2, n: 7, d: 8.5, h: 4.8, aisle: 0 },
+    { r0: 257, y0: 62, n: 4, d: 14, h: 8.4, aisle: 0 },
     // 2층: 시민석
-    { r0: 327.5, y0: 98.2, n: 4, d: 8, h: 5, aisle: 0.5 }
+    { r0: 321, y0: 108, n: 2, d: 14, h: 8.2, aisle: 0.5 }
     // 3층: 서민석 (나무 의자)
   ];
-  var GW = 0.172;
-  var ARC_R = 360;
-  var ATT_R = 372;
+  var NAISLE = 16;
+  var AISLE_W = 9;
+  var GW = 0.185;
+  var ARC_R = 350;
+  var ATT_R = 362;
   var ATT_T = 6;
   var BAY = P2 / 36;
-  var VEL = { r0: 296, y0: 168, r1: 372, y1: 200, half: 1.75 };
+  var T3Y = SEC[2].y0 + SEC[2].n * SEC[2].h;
+  var AY1 = T3Y + 38;
+  var TER = AY1 + 1.6;
+  var ATT_TOP = TER + 30;
+  var ENV_TOP = ATT_TOP + 2.4;
+  var VEL = { r0: 290, y0: ATT_TOP - 30, r1: ATT_R, y1: ATT_TOP - 2, half: 1.75 };
+  var PH = 6;
   var SUN = new T.Vector3(-330, 310, 250).normalize();
   var COLS = {
     plinth: "#8B7A63",
@@ -7476,7 +7485,7 @@ h3 {
     const flames = [], banners = [], flags = [], bars = [];
     const S1 = SEC[0], S22 = SEC[1], S3 = SEC[2], t1 = secTop(S1), t2 = secTop(S22), t3 = secTop(S3);
     revolve(panel, (phi) => {
-      const H2 = wallH(phi), ph = 3.6 * smooth(0.85, 1.05, Math.abs(angDiff(phi, 0)));
+      const H2 = wallH(phi), ph = PH * smooth(0.85, 1.05, Math.abs(angDiff(phi, 0)));
       return [
         [186, -1, 186, 3, "plinth", 0.8, 0.95],
         [186, 3, 187, 3, "plinth"],
@@ -7522,25 +7531,25 @@ h3 {
     }
     const aisleAngles = (s) => {
       const out = [];
-      for (let j = 0; j < 20; j++) {
-        const a = P2 + (j + s.aisle) * P2 / 10;
+      for (let j = 0; j < NAISLE; j++) {
+        const a = P2 + (j + s.aisle) * P2 * 2 / NAISLE;
         if (Math.abs(angDiff(a, 0)) > GAP + 0.05) out.push(a);
       }
       return out;
     };
     SEC.forEach((s, si) => {
       for (const a of aisleAngles(s)) {
-        if (si === 0 && (Math.abs(angDiff(a, P2)) < 0.22 || GATES.some((g) => Math.abs(angDiff(a, g)) < 0.22))) continue;
+        if (si === 0 && (Math.abs(angDiff(a, P2)) < 0.22 || GATES.some((g) => Math.abs(angDiff(a, g)) < GW + 0.04))) continue;
         for (let k = 0; k < s.n; k++) {
-          const r = s.r0 + k * s.d, y = s.y0 + k * s.h, w = 5.6, col = si === 2 ? K.aisle3 : K.aisle;
+          const r = s.r0 + k * s.d, y = s.y0 + k * s.h, w = AISLE_W, col = si === 2 ? K.aisle3 : K.aisle;
           if (k > 0 || si === 0) stone.geo(box(w, s.h / 2, s.d / 2), at(r - s.d / 4, a, y + s.h / 4), col);
           stone.geo(box(w, 0.08, s.d), at(r + s.d / 2, a, y + s.h + 0.03), col);
         }
         if (si > 0) {
           const rf = s.r0 - 0.5, yb = si === 1 ? t1.y : t2.y, hgt = s.y0 - 1 - yb;
-          const g = windowBay(9, 0, hgt - 0.1, [], 0.4);
+          const g = windowBay(12, 0, hgt - 0.1, [], 0.4);
           plain.geo(g, mul(at(rf - 0.3, a, yb), M(0, 0, 0, 0, P2)), K.cap);
-          const dw = 5.2, dh = Math.min(hgt - 1.2, 6.6), door = new T.Shape();
+          const dw = 7, dh = Math.min(hgt - 1.5, 10.5), door = new T.Shape();
           door.moveTo(-dw / 2, 0);
           door.lineTo(dw / 2, 0);
           door.lineTo(dw / 2, dh - dw / 2);
@@ -7552,24 +7561,22 @@ h3 {
     });
     const hb = ARC_R * BAY;
     for (let a = A0 + BAY / 2; a < A1 - BAY / 4; a += BAY) {
-      upper.geo(archBay(hb * 1.012, t3.y, 150, 17, 132, 5), at(ARC_R, a, 0, 0, P2), K.arc);
-      upper.geo(box(hb * 1.012, 1.6, 7), at(ARC_R + 2.8, a, 150.8), K.cap);
-      upper.geo(box(3.2, 26, 1.2), at(ARC_R - 0.5, a + BAY / 2, t3.y + 13), K.cap);
-      upperP.geo(box(hb * 1.02, 0.4, 12), at(ARC_R + 6, a, 146.2), K.gdark);
-      upperP.geo(box(hb * 1.02, 146 - t3.y, 0.4), at(ATT_R - 0.3, a, (146 + t3.y) / 2), K.gdark);
+      upper.geo(archBay(hb * 1.012, T3Y, AY1, 22, T3Y + 21, 5), at(ARC_R, a, 0, 0, P2), K.arc);
+      upper.geo(box(hb * 1.012, 1.6, 7), at(ARC_R + 2.8, a, AY1 + 0.8), K.cap);
+      upper.geo(box(3.2, AY1 - T3Y - 6, 1.2), at(ARC_R - 0.5, a + BAY / 2, T3Y + (AY1 - T3Y - 6) / 2), K.cap);
+      upperP.geo(box(hb * 1.02, 0.4, 12), at(ARC_R + 6, a, AY1 - 4), K.gdark);
+      upperP.geo(box(hb * 1.02, AY1 - 4 - T3Y, 0.4), at(ATT_R - 0.3, a, (AY1 - 4 + T3Y) / 2), K.gdark);
     }
-    revolve(upper, () => [[ARC_R + 5, 151.6, ATT_R, 151.6, "terr", 0.95, 0.8]], A0, A1, 240, (k) => K[k]);
+    revolve(upper, () => [[ARC_R + 5, TER, ATT_R, TER, "terr", 0.95, 0.8]], A0, A1, 240, (k) => K[k]);
     const hb2 = ATT_R * BAY;
     for (let a = A0 + BAY / 2; a < A1 - BAY / 4; a += BAY) {
-      upper.geo(windowBay(hb2 * 1.012, 151.6, 178, [{ x: 0, w: 13, yb: 155, ys: 168, arch: true }], ATT_T), at(ATT_R, a, 0, 0, P2), K.attic);
-      upper.geo(windowBay(hb2 * 1.012, 178, 202, [{ x: 0, w: 7, yb: 183, ys: 194 }], ATT_T), at(ATT_R, a, 0, 0, P2), K.attic);
-      upper.geo(box(hb2 * 1.012, 1.6, ATT_T + 2), at(ATT_R + ATT_T / 2, a, 178.4), K.cap);
-      upper.geo(box(hb2 * 1.012, 2.4, ATT_T + 3), at(ATT_R + ATT_T / 2, a, 203), K.cap);
-      upper.geo(box(2.6, 23, 1), at(ATT_R - 0.4, a + BAY / 2, 166), K.cap);
+      upper.geo(windowBay(hb2 * 1.012, TER, ATT_TOP, [{ x: 0, w: 14, yb: TER + 5, ys: TER + 16, arch: true }], ATT_T), at(ATT_R, a, 0, 0, P2), K.attic);
+      upper.geo(box(hb2 * 1.012, 2.4, ATT_T + 3), at(ATT_R + ATT_T / 2, a, ATT_TOP + 1.2), K.cap);
+      upper.geo(box(2.6, ATT_TOP - TER - 4, 1), at(ATT_R - 0.4, a + BAY / 2, (ATT_TOP + TER) / 2), K.cap);
       const i = Math.round((a - A0) / BAY);
-      upperP.geo(cyl(0.85, 1.1, 36, 6), at(ATT_R + ATT_T + 1.6, a + BAY / 2, 196), K.woodDk);
-      upperP.geo(box(3, 2, 4), at(ATT_R + ATT_T + 1, a + BAY / 2, 178.5), K.cap);
-      if (i % 6 === 2) flags.push({ p: pol(ATT_R + ATT_T + 1.6, a + BAY / 2, 211), phi: a + BAY / 2 });
+      upperP.geo(cyl(0.85, 1.1, 36, 6), at(ATT_R + ATT_T + 1.6, a + BAY / 2, ATT_TOP - 2), K.woodDk);
+      upperP.geo(box(3, 2, 4), at(ATT_R + ATT_T + 1, a + BAY / 2, ATT_TOP - 19.5), K.cap);
+      if (i % 6 === 2) flags.push({ p: pol(ATT_R + ATT_T + 1.6, a + BAY / 2, ATT_TOP + 13), phi: a + BAY / 2 });
     }
     {
       const NR = 7, NA3 = 4, la = VEL.half * 2 / Math.round(VEL.half * 2 / BAY), nP = Math.round(VEL.half * 2 / la);
@@ -7592,7 +7599,7 @@ h3 {
           const r = Math.hypot(x, z);
           return r < VEL.r0 + (VEL.r1 - VEL.r0) * 0.12 ? K.stripe : pI % 4 === 1 ? K.canvas2 : K.canvas;
         });
-        const top = new T.Vector3(...pol(ATT_R + ATT_T + 1.6, a0, 213)), end = new T.Vector3(...pol(VEL.r0, a0, VEL.y0 - 0.5)), mid = top.clone().add(end).multiplyScalar(0.5), L = top.distanceTo(end);
+        const top = new T.Vector3(...pol(ATT_R + ATT_T + 1.6, a0, ATT_TOP + 15)), end = new T.Vector3(...pol(VEL.r0, a0, VEL.y0 - 0.5)), mid = top.clone().add(end).multiplyScalar(0.5), L = top.distanceTo(end);
         const rg = cyl(0.28, 0.28, L, 4);
         const q = new T.Quaternion().setFromUnitVectors(new T.Vector3(0, 1, 0), end.clone().sub(top).normalize());
         upperP.geo(rg, new T.Matrix4().compose(mid, q, new T.Vector3(1, 1, 1)), K.rope);
@@ -7601,24 +7608,24 @@ h3 {
     }
     for (const side of [1, -1]) {
       const phi = side > 0 ? A0 : A1;
-      const env = (r) => r < 205 ? 32 : r < ARC_R ? 32 + (r - 205) * (t3.y + 10 - 32) / (ARC_R - 205) : 205;
+      const env = (r) => r < 205 ? 32 : r < ARC_R ? 32 + (r - 205) * (t3.y + 10 - 32) / (ARC_R - 205) : ENV_TOP;
       const s = new T.Shape();
       s.moveTo(199, -1);
       for (let r = 199; r < ARC_R; r += 4) s.lineTo(r, env(r));
       s.lineTo(ARC_R, env(ARC_R - 0.01));
-      s.lineTo(ARC_R, 205);
-      s.lineTo(ATT_R + ATT_T, 205);
+      s.lineTo(ARC_R, ENV_TOP);
+      s.lineTo(ATT_R + ATT_T, ENV_TOP);
       s.lineTo(ATT_R + ATT_T, -1);
       s.lineTo(199, -1);
       const g = new T.ExtrudeGeometry(s, { depth: 9, bevelEnabled: false, curveSegments: 2 });
       const ex = new T.Vector3(Math.sin(phi), 0, Math.cos(phi)), ez = new T.Vector3(Math.cos(phi), 0, -Math.sin(phi)).multiplyScalar(side);
       const base = new T.Matrix4().makeBasis(ex, new T.Vector3(0, 1, 0), ez), F = (x, y, z, ry = 0) => mul(base, M(x, y, z, 0, ry));
       upper.geo(g, F(0, 0, -1.5), K.arc);
-      const lv = [[8, 40], [46, 80], [86, 118], [124, 158], [164, 198]], ow = 12;
+      const lv = [[8, 40], [46, 80], [86, 118], [T3Y + 2, AY1 - 2], [TER + 4, ATT_TOP - 3]], ow = 12;
       lv.forEach(([yb, yt], li) => {
         const cs = [];
         for (let c = 225; c + 8 <= ARC_R; c += 22) cs.push(c);
-        if (li >= 3) cs.push(369);
+        if (li >= 3) cs.push((ARC_R + ATT_R + ATT_T) / 2);
         for (const c of cs) {
           if (env(c - 8) < yt + 3 || env(c + 8) < yt + 3 || c + 8 > ATT_R + ATT_T) continue;
           const ys = yt - 5 - ow / 2, dark = new T.Shape();
@@ -7637,7 +7644,7 @@ h3 {
           for (const sx of [-1, 1]) upper.geo(box(2.2, yt - yb, 1), F(c + sx * 11, (yb + yt) / 2, -1.9), K.cap);
         }
       });
-      for (const yy of [43, 83, 121, 161]) {
+      for (const yy of [43, 83, 121, AY1 + 1]) {
         const rr = [];
         for (let r = 199; r < ATT_R + ATT_T; r += 2) if (env(r) > yy + 3) rr.push(r);
         if (rr.length < 2) continue;
@@ -7651,99 +7658,102 @@ h3 {
       g.translate(0, 7.4, 0);
       upper.geo(g, null, K.terr);
     }
-    const FY = 38.5;
+    const FY = 41, CH = 48;
     {
       const L = (x, y, z, rx = 0, ry = 0, rz = 0, sx = 1, sy = sx, sz = sx) => mul(at(199, P2, 0), M(x, y, z, rx, ry, rz, sx, sy, sz));
-      panel.geo(box(70, FY, 26), L(0, FY / 2, 2), (x, y, z, nx, ny) => ny > 0.5 ? K.cornice : K.face.clone().lerp(K.dust, 0.55 * smooth(5, 0, y)));
-      stone.geo(box(70, 2, 46), L(0, FY, -8), K.cap);
-      stone.geo(box(72, 2, 3.4), L(0, FY - 1.5, 15.3), K.cornice);
-      for (let i = 0; i < 13; i++) plain.geo(cyl(0.6, 0.75, 4.2, 6), L(-27 + i * 4.5, FY + 3.1, 13.2), K.marble);
-      plain.geo(box(70, 0.9, 2.6), L(0, FY + 5.6, 13.2), K.gold);
-      for (const x of [-32, -12, 12, 32]) for (const z of [11, -28]) {
-        plain.geo(cyl(1.9, 2.1, 28, 14), L(x, FY + 15, z), K.marble);
-        plain.geo(box(5, 1.6, 5), L(x, FY + 1.8, z), K.marble);
-        plain.geo(box(5.4, 2, 5.4), L(x, FY + 30, z), K.gold);
+      const HW = 40;
+      panel.geo(box(HW * 2, FY, 26), L(0, FY / 2, 2), (x, y, z, nx, ny) => ny > 0.5 ? K.cornice : K.face.clone().lerp(K.dust, 0.55 * smooth(5, 0, y)));
+      stone.geo(box(HW * 2, 2, 46), L(0, FY, -8), K.cap);
+      stone.geo(box(HW * 2 + 2, 2, 3.4), L(0, FY - 1.5, 15.3), K.cornice);
+      for (let i = 0; i < 15; i++) plain.geo(cyl(0.9, 1.1, 8, 6), L(-HW + 5 + i * (HW * 2 - 10) / 14, FY + 5, 13.2), K.marble);
+      plain.geo(box(HW * 2, 1.4, 3), L(0, FY + 9.6, 13.2), K.gold);
+      for (const x of [-HW + 3, -14, 14, HW - 3]) for (const z of [11, -28]) {
+        plain.geo(cyl(2.4, 2.7, CH, 14), L(x, FY + 1 + CH / 2, z), K.marble);
+        plain.geo(box(6.4, 2, 6.4), L(x, FY + 2, z), K.marble);
+        plain.geo(box(6.8, 2.4, 6.8), L(x, FY + CH + 1.2, z), K.gold);
       }
-      const EY = FY + 33;
-      plain.geo(box(72, 4.2, 4.2), L(0, EY, 11), K.marble);
-      plain.geo(box(72, 4.2, 4.2), L(0, EY, -28), K.marble);
-      plain.geo(box(4.2, 4.2, 43), L(-34, EY, -8.5), K.marble);
-      plain.geo(box(4.2, 4.2, 43), L(34, EY, -8.5), K.marble);
-      const gab = new T.Shape();
-      gab.moveTo(-37, 0);
-      gab.lineTo(37, 0);
-      gab.lineTo(0, 13);
-      gab.lineTo(-37, 0);
-      plain.geo(new T.ExtrudeGeometry(gab, { depth: 1.6, bevelEnabled: false }), L(0, EY + 2, 11.6), K.marble);
-      plain.geo(new T.ExtrudeGeometry(gab, { depth: 1.6, bevelEnabled: false }), L(0, EY + 2, -30), K.marble);
-      const slope = Math.atan2(13, 37), len2 = Math.hypot(13, 37) + 1.5;
-      for (const s of [-1, 1]) plain.geo(box(len2, 1.4, 46), L(s * 18.2, EY + 8.6, -8.5, 0, 0, -s * slope), K.roof);
-      plain.geo(new T.OctahedronGeometry(2.6), L(0, EY + 16.5, 12.6), K.gold);
-      for (const x of [-36, 36]) plain.geo(new T.ConeGeometry(1.6, 4, 6), L(x, EY + 4, 12.6), K.gold);
-      plain.geo(new T.CircleGeometry(3.6, 16), L(0, EY + 6.5, 13.25), K.gold);
-      for (const s of [-1, 1]) {
+      const EY = FY + CH + 4.6;
+      plain.geo(box(HW * 2 + 2, 4.6, 4.6), L(0, EY, 11), K.marble);
+      plain.geo(box(HW * 2 + 2, 4.6, 4.6), L(0, EY, -28), K.marble);
+      plain.geo(box(4.6, 4.6, 43), L(-HW, EY, -8.5), K.marble);
+      plain.geo(box(4.6, 4.6, 43), L(HW, EY, -8.5), K.marble);
+      const GW2 = HW + 3, GH = 15, gab = new T.Shape();
+      gab.moveTo(-GW2, 0);
+      gab.lineTo(GW2, 0);
+      gab.lineTo(0, GH);
+      gab.lineTo(-GW2, 0);
+      plain.geo(new T.ExtrudeGeometry(gab, { depth: 1.6, bevelEnabled: false }), L(0, EY + 2.3, 11.6), K.marble);
+      plain.geo(new T.ExtrudeGeometry(gab, { depth: 1.6, bevelEnabled: false }), L(0, EY + 2.3, -30), K.marble);
+      const slope = Math.atan2(GH, GW2), len2 = Math.hypot(GH, GW2) + 1.5;
+      for (const sd of [-1, 1]) plain.geo(box(len2, 1.4, 46), L(sd * GW2 / 2, EY + 2.3 + GH / 2 + 0.6, -8.5, 0, 0, -sd * slope), K.roof);
+      plain.geo(new T.OctahedronGeometry(3), L(0, EY + 2.3 + GH + 2.6, 12.6), K.gold);
+      for (const x of [-GW2 + 1, GW2 - 1]) plain.geo(new T.ConeGeometry(1.8, 4.6, 6), L(x, EY + 4.6, 12.6), K.gold);
+      plain.geo(new T.CircleGeometry(4.2, 16), L(0, EY + 2.3 + GH * 0.4, 13.25), K.gold);
+      for (const sd of [-1, 1]) {
         const sh = new T.Shape();
         sh.moveTo(0, 0);
-        sh.lineTo(16, 0);
-        sh.quadraticCurveTo(7, -9, 2, -20);
-        sh.lineTo(0, -20);
+        sh.lineTo(20, 0);
+        sh.quadraticCurveTo(9, -12, 2.5, -30);
+        sh.lineTo(0, -30);
         sh.lineTo(0, 0);
         const g = new T.ExtrudeGeometry(sh, { depth: 0.5, bevelEnabled: false, curveSegments: 8 });
-        plain.geo(g, L(s * 30, EY - 2, 10.2, 0, s > 0 ? P2 : 0), K.purple);
-        plain.geo(box(1.2, 1.2, 1.2), L(s * 28.8, EY - 21.4, 10.6), K.gold);
+        plain.geo(g, L(sd * (HW - 3), EY - 2.3, 10.2, 0, sd > 0 ? P2 : 0), K.purple);
+        plain.geo(box(1.6, 1.6, 1.6), L(sd * (HW - 4.5), EY - 32, 10.6), K.gold);
       }
-      plain.geo(box(68, 30, 1), L(0, FY + 16, -29), K.crimsonDk);
-      plain.geo(box(10, 14, 5), L(0, FY + 8, -22), K.gold);
-      plain.geo(box(12, 4, 9), L(0, FY + 3, -18), K.crimson);
-      for (const s of [-1, 1]) {
-        plain.geo(cyl(1, 1.4, 5, 6), L(s * 42, 30.1, 11.3), K.iron);
-        plain.geo(cyl(3.6, 2, 2.6, 10), L(s * 42, 33.8, 11.3), K.iron);
-        flames.push({ p: new T.Vector3(0, 36, 11.3).applyMatrix4(L(s * 42, 0, 0)), s: 1.05 });
+      plain.geo(box(HW * 2 - 2, CH, 1), L(0, FY + 1 + CH / 2, -29), K.crimsonDk);
+      plain.geo(box(15, 30, 6), L(0, FY + 16, -25), K.gold);
+      plain.geo(box(17, 8.2, 12), L(0, FY + 1 + 4.1, -18), K.crimson);
+      for (const sd of [-1, 1]) {
+        plain.geo(cyl(1, 1.4, 5, 6), L(sd * (HW + 8), WALL_H + PH + 2.5, 11.3), K.iron);
+        plain.geo(cyl(3.6, 2, 2.6, 10), L(sd * (HW + 8), WALL_H + PH + 6.2, 11.3), K.iron);
+        flames.push({ p: new T.Vector3(0, WALL_H + PH + 8.4, 11.3).applyMatrix4(L(sd * (HW + 8), 0, 0)), s: 1.05 });
       }
       banners.push({ p: pol(199 - 16.9, P2, FY - 3), phi: P2, big: true });
     }
+    const GH0 = 58;
     for (const g of GATES) {
       const L = (x, y, z, rx = 0, ry = 0, rz = 0, sx = 1, sy = sx, sz = sx) => mul(at(WALL_R, g, 0), M(x, y, z, rx, ry, rz, sx, sy, sz));
-      const s = new T.Shape(), ow = 30, ys = 21;
-      s.moveTo(-33, 0);
+      const s = new T.Shape(), ow = 36, ys = 26, FW = 37;
+      s.moveTo(-FW, 0);
       s.lineTo(-ow / 2, 0);
       s.lineTo(-ow / 2, ys);
       s.absarc(0, ys, ow / 2, P2, 0, true);
       s.lineTo(ow / 2, 0);
-      s.lineTo(33, 0);
-      s.lineTo(33, 48);
-      s.lineTo(-33, 48);
-      s.lineTo(-33, 0);
+      s.lineTo(FW, 0);
+      s.lineTo(FW, GH0);
+      s.lineTo(-FW, GH0);
+      s.lineTo(-FW, 0);
       panel.geo(new T.ExtrudeGeometry(s, { depth: 15, bevelEnabled: false, curveSegments: 14 }), L(0, 0, -12), (x, y, z, nx, ny) => ny > 0.5 ? K.cornice : K.face.clone().lerp(K.dust, 0.55 * smooth(5, 0, y)));
       const ring2 = new T.Shape();
-      ring2.absarc(0, 0, ow / 2 + 3.2, 0, P2, false);
+      ring2.absarc(0, 0, ow / 2 + 3.4, 0, P2, false);
       ring2.lineTo(-ow / 2, 0);
       ring2.absarc(0, 0, ow / 2, P2, 0, true);
-      ring2.lineTo(ow / 2 + 3.2, 0);
+      ring2.lineTo(ow / 2 + 3.4, 0);
       plain.geo(new T.ExtrudeGeometry(ring2, { depth: 1, bevelEnabled: false, curveSegments: 14 }), L(0, ys, 3), K.cornice);
-      plain.geo(box(4.6, 6, 2), L(0, ys + ow / 2 + 1.8, 3.6), K.gold);
+      plain.geo(box(5, 6.4, 2), L(0, ys + ow / 2 + 2, 3.6), K.gold);
       for (const sx of [-1, 1]) {
-        plain.geo(cyl(2.7, 2.9, 38, 14, false), L(sx * 24, 21, 3), K.marble);
-        plain.geo(box(7, 2.4, 4), L(sx * 24, 1.2, 3), K.cornice);
-        plain.geo(box(7, 2.4, 4), L(sx * 24, 40.6, 3), K.gold);
-        plain.geo(cyl(2.8, 1.6, 2.4, 10), L(sx * 27, 50.7, 1), K.iron);
-        flames.push({ p: new T.Vector3(0, 52.8, 1).applyMatrix4(L(sx * 27, 0, 0)), s: 1.2 });
+        plain.geo(cyl(3, 3.2, 46, 14, false), L(sx * 28, 25, 3), K.marble);
+        plain.geo(box(7.6, 2.6, 4.4), L(sx * 28, 1.3, 3), K.cornice);
+        plain.geo(box(7.6, 2.6, 4.4), L(sx * 28, 49.3, 3), K.gold);
+        plain.geo(cyl(2.8, 1.6, 2.4, 10), L(sx * 31, GH0 + 2.7, 1), K.iron);
+        flames.push({ p: new T.Vector3(0, GH0 + 4.8, 1).applyMatrix4(L(sx * 31, 0, 0)), s: 1.2 });
       }
-      plain.geo(box(68, 3.4, 4), L(0, 43.6, 3.5), K.cornice);
-      plain.geo(box(70, 1.8, 5), L(0, 48.6, 3.4), K.cornice);
-      plain.geo(new T.OctahedronGeometry(3.2), L(0, 46, 6, 0, 0, 0, 1, 1, 0.4), K.gold);
-      plain.geo(box(ow, 36, 0.5), L(0, 18, -40), K.void);
-      for (const sx of [-1, 1]) plain.geo(box(0.5, 36, 28), L(sx * ow / 2, 18, -26), K.gdark);
-      plain.geo(box(ow, 0.5, 28), L(0, 36, -26), K.gdark);
+      plain.geo(box(FW * 2 - 2, 3.6, 4.2), L(0, 52.4, 3.5), K.cornice);
+      plain.geo(box(FW * 2 + 2, 2, 5.2), L(0, GH0 + 0.6, 3.4), K.cornice);
+      plain.geo(new T.OctahedronGeometry(3.4), L(0, 55.6, 6, 0, 0, 0, 1, 1, 0.4), K.gold);
+      const th = ys + ow / 2;
+      plain.geo(box(ow, th, 0.5), L(0, th / 2, -40), K.void);
+      for (const sx of [-1, 1]) plain.geo(box(0.5, th, 28), L(sx * ow / 2, th / 2, -26), K.gdark);
+      plain.geo(box(ow, 0.5, 28), L(0, th, -26), K.gdark);
       const gb = new Acc();
-      for (let i = 0; i < 7; i++) {
-        const x = (i - 3) * ow / 7.2, h = ys + Math.sqrt(Math.max(0, (ow / 2) ** 2 - x * x)) - 0.6;
-        gb.geo(cyl(0.7, 0.7, h, 6), M(x, h / 2, 0), K.iron);
-        gb.geo(new T.ConeGeometry(1, 2.4, 6), M(x, -1, 0, P2), K.ironHi);
+      for (let i = 0; i < 8; i++) {
+        const x = (i - 3.5) * ow / 8.4, h = ys + Math.sqrt(Math.max(0, (ow / 2) ** 2 - x * x)) - 0.6;
+        gb.geo(cyl(0.8, 0.8, h, 6), M(x, h / 2, 0), K.iron);
+        gb.geo(new T.ConeGeometry(1.1, 2.6, 6), M(x, -1, 0, P2), K.ironHi);
       }
-      for (let j = 0; j < 3; j++) gb.geo(box(ow - 1, 1.2, 1.2), M(0, 6 + j * 10, 0), K.ironHi);
+      for (let j = 0; j < 3; j++) gb.geo(box(ow - 1, 1.3, 1.3), M(0, 7 + j * 12, 0), K.ironHi);
       bars.push({ acc: gb, m: L(0, 0, -3) });
-      const TOPY = 49.5, prof = () => [[199, 24, 199, TOPY, "balt", 0.8, 1], [199, TOPY, t1.r, TOPY, "cap", 1, 0.9], [t1.r, TOPY, t1.r, t1.y, "balt"]];
+      const TOPY = GH0 + 1.6, prof = () => [[199, 24, 199, TOPY, "balt", 0.8, 1], [199, TOPY, t1.r, TOPY, "cap", 1, 0.9], [t1.r, TOPY, t1.r, t1.y, "balt"]];
       revolve(stone, prof, g - GW, g + GW, 10, (k) => K[k]);
       for (const sd of [-1, 1]) {
         const a = g + sd * GW, sh = new T.Shape();
@@ -7754,14 +7764,14 @@ h3 {
         sh.lineTo(199, 24);
         const ex = new T.Vector3(Math.sin(a), 0, Math.cos(a)), ez = new T.Vector3(Math.cos(a), 0, -Math.sin(a)).multiplyScalar(sd);
         stone.geo(new T.ShapeGeometry(sh), new T.Matrix4().makeBasis(ex, new T.Vector3(0, 1, 0), ez), K.balt);
-        stone.geo(box(1.6, 4, t1.r - 199), mul(at((199 + t1.r) / 2, a - sd * 4e-3, 0), M(0, TOPY + 2, 0)), K.cap);
+        stone.geo(box(1.6, 6, t1.r - 199), mul(at((199 + t1.r) / 2, a - sd * 4e-3, 0), M(0, TOPY + 3, 0)), K.cap);
       }
     }
     for (const d of [-1.62, -1.05, 1.05, 1.62]) {
       const phi = P2 + d;
-      plain.geo(cyl(1, 1.4, 5, 6), at(187.7, phi, WALL_H + 3.6 + 2.5), K.iron);
-      plain.geo(cyl(3.6, 2, 2.6, 10), at(187.7, phi, WALL_H + 3.6 + 6.2), K.iron);
-      flames.push({ p: new T.Vector3(...pol(187.7, phi, WALL_H + 3.6 + 8.4)), s: 1 });
+      plain.geo(cyl(1, 1.4, 5, 6), at(187.7, phi, WALL_H + PH + 2.5), K.iron);
+      plain.geo(cyl(3.6, 2, 2.6, 10), at(187.7, phi, WALL_H + PH + 6.2), K.iron);
+      flames.push({ p: new T.Vector3(...pol(187.7, phi, WALL_H + PH + 8.4)), s: 1 });
     }
     for (const d of [-0.95, -0.4, 0.4, 0.95]) banners.push({ p: pol(185.1, P2 + d, WALL_H - 1.6), phi: P2 + d });
     const mStone = stoneMat(7.5, 3.4, 0.11, 0.1), mPanel = stoneMat(11, 6.5, 0.07, 0.05), mPlain = new T.MeshLambertMaterial({ vertexColors: true }), mCloth = new T.MeshLambertMaterial({ vertexColors: true, side: T.DoubleSide });
@@ -7778,6 +7788,7 @@ h3 {
       const m = b.acc.mesh(mPlain, false);
       m.applyMatrix4(b.m);
       m.castShadow = true;
+      m.userData.lift = 46;
       grp2.add(m);
       return m;
     });
@@ -8027,18 +8038,18 @@ h3 {
     const seats = [];
     const aisleAng = (s) => {
       const out = [];
-      for (let j = 0; j < 20; j++) out.push(P2 + (j + s.aisle) * P2 / 10);
+      for (let j = 0; j < NAISLE; j++) out.push(P2 + (j + s.aisle) * P2 * 2 / NAISLE);
       return out;
     };
     SEC.forEach((s, si) => {
       const ais = aisleAng(s);
       for (let k = 0; k < s.n; k++) {
-        const re = s.r0 + k * s.d, y = s.y0 + (k + 1) * s.h, r = re + 1, step2 = 6.9 / r;
+        const re = s.r0 + k * s.d, y = s.y0 + (k + 1) * s.h, r = re + 1 * MAN, step2 = 13 / r;
         for (let a = A0 + 0.035; a < A1 - 0.035; a += step2 * (0.94 + rng() * 0.12)) {
-          if (ais.some((x) => Math.abs(angDiff(a, x)) < (2.8 + 3.2) / r)) continue;
-          if (si === 0 && (Math.abs(angDiff(a, P2)) < 0.205 || GATES.some((g) => Math.abs(angDiff(a, g)) < 0.2))) continue;
+          if (ais.some((x) => Math.abs(angDiff(a, x)) < (AISLE_W / 2 + 6.2) / r)) continue;
+          if (si === 0 && (Math.abs(angDiff(a, P2)) < 47 / r || GATES.some((g) => Math.abs(angDiff(a, g)) < GW + 0.03))) continue;
           const gapN = hash(Math.floor(a * r / 30), si * 10 + k);
-          if (rng() > 0.93 - 0.3 * Math.max(0, gapN - 0.6)) continue;
+          if (rng() > 0.88 - 0.3 * Math.max(0, gapN - 0.6)) continue;
           seats.push({ r, a: a + (rng() - 0.5) * 0.15 / r * 6, y, si, lock: 0 });
         }
       }
@@ -8048,25 +8059,23 @@ h3 {
       return { r: Math.hypot(p.x, p.z), a: Math.atan2(p.x, p.z) };
     };
     {
-      const e = pv(0, -19.5);
-      seats.push({ r: e.r, a: e.a, y: 38.5 + 5, si: 9, lock: -1, emperor: true });
+      const e = pv(0, -12 - 1 * MAN);
+      seats.push({ r: e.r, a: e.a, y: 41 + 1 + 8.2, si: 9, lock: -1, emperor: true });
     }
-    for (const x of [-21, 21]) {
-      const g = pv(x, 6);
-      seats.push({ r: g.r, a: g.a, y: 38.5 + 1, si: 8, lock: 1 });
+    for (const x of [-25, 25]) {
+      const g = pv(x, 4);
+      seats.push({ r: g.r, a: g.a, y: 41 + 1, si: 8, lock: 1 });
     }
-    for (const g of GATES) for (let i = 0; i < 5; i++) {
-      const p = new T.Vector3((i - 2) * 9, 0, -14).applyMatrix4(at(199, g, 0));
-      seats.push({ r: Math.hypot(p.x, p.z), a: Math.atan2(p.x, p.z), y: 49.5, si: 7, lock: -1 });
+    for (const g of GATES) for (let i = 0; i < 3; i++) {
+      const p = new T.Vector3((i - 1) * 15, 0, -16).applyMatrix4(at(199, g, 0));
+      seats.push({ r: Math.hypot(p.x, p.z), a: Math.atan2(p.x, p.z), y: 58 + 1.6, si: 7, lock: 1 });
     }
     const N = seats.length, groups = [];
-    for (let i = 0; i < 10; i++) groups.push([]);
-    const CAM = new T.Vector3(0, 285, 420);
+    for (let i = 0; i < 5; i++) groups.push([]);
     seats.forEach((s) => {
       const hv = s.emperor ? 1 : s.si === 8 ? 3 : 1 + Math.floor(rng() * 4.6);
       s.hv = Math.min(5, hv);
-      const far = s.si < 7 && CAM.distanceTo(new T.Vector3(...pol(s.r, s.a, s.y))) > 620 ? 1 : 0;
-      groups[(s.hv - 1) * 2 + far].push(s);
+      groups[s.hv - 1].push(s);
     });
     for (const g of groups) {
       for (let i = g.length - 1; i > 0; i--) {
@@ -8079,11 +8088,11 @@ h3 {
     const pick = (arr) => lin2(arr[Math.floor(rng() * arr.length)]);
     groups.forEach((list, gi) => {
       if (!list.length) return;
-      const geo2 = figureGeo((gi >> 1) + 1, gi & 1), n = list.length;
+      const geo2 = figureGeo(gi + 1, 0), n = list.length;
       const Ca = new Float32Array(n * 4), Cb = new Float32Array(n * 4), Cc = new Float32Array(n * 4), D2 = new Float32Array(n * 4), E = new Float32Array(n * 2);
       const im = new T.InstancedMesh(geo2, mat3, n), m4 = new T.Matrix4();
       list.forEach((s, i) => {
-        const pos = new T.Vector3(...pol(s.r, s.a, s.y)), sc = 1 + rng() * 0.14;
+        const pos = new T.Vector3(...pol(s.r, s.a, s.y)), sc = MAN * (0.96 + rng() * 0.08);
         m4.compose(pos, _q.setFromEuler(_e.set(0, s.a + P2 + (rng() - 0.5) * 0.24, 0)), _s.set(sc, sc, sc));
         im.setMatrixAt(i, m4);
         let c0 = s.si === 0 || s.si === 7 ? rng() < 0.5 ? pick(PAL.vip) : pick(PAL.vipCol) : s.si === 1 ? pick(PAL.mid) : pick(PAL.low), c32 = pick(PAL.acc);
@@ -8101,7 +8110,7 @@ h3 {
         Ca.set([c0.r, c0.g, c0.b, c32.r], i * 4);
         Cb.set([c1.r, c1.g, c1.b, c32.g], i * 4);
         Cc.set([c2.r, c2.g, c2.b, c32.b], i * 4);
-        D2.set([rng() * 6.28, 0.75 + rng() * 0.5, s.lock ? 0.5 : rng(), velShade(pos.x, pos.y + 8, pos.z)], i * 4);
+        D2.set([rng() * 6.28, 0.75 + rng() * 0.5, s.lock ? 0.5 : rng(), velShade(pos.x, pos.y + 8 * MAN, pos.z)], i * 4);
         E.set([s.si === 1 || s.si === 2 ? rng() < 0.07 ? 1 : 0 : 0, s.lock], i * 2);
       });
       geo2.setAttribute("iCa", new T.InstancedBufferAttribute(Ca, 4));
@@ -8660,11 +8669,11 @@ h3 {
     }
     const want3 = game.cine && game.cine.kind === "intro" && game.cine.t < 1.25 ? 1 : 0;
     gateOpen += (want3 - gateOpen) * Math.min(1, dt * (want3 ? 9 : 4));
-    for (const m of stage.bars) m.position.y = gateOpen * 27;
+    for (const m of stage.bars) m.position.y = gateOpen * (m.userData.lift || 27);
   }
   function standFloor(r) {
     if (!NEW_COLO) return Math.min(WALL_H2 + 11 * 6 + 70, WALL_H2 + 11 * (Math.floor((r - (WALL_R2 + WALL_T + 8)) / 18) + 1) + 26);
-    return r < 360 ? standY(r) + 26 : 175;
+    return r < ARC_R ? standY(r) + 30 : 200;
   }
   if (/[?&]debug\b/.test(location.search)) {
     window.__stage = stage;
@@ -11250,10 +11259,10 @@ h3 {
     };
     const plate = (tone2) => (x, y, z, ny) => ny > 0.45 ? mix(tone2, shellHi, 0.55) : ny < -0.3 ? under : tone2;
     const list = [paint(jitter(loft([{ z: 3, y: 0.5, rx: 11.6, ry: 4.6, rb: 3.2 }, { z: 10, y: 0.7, rx: 12.6, ry: 5.4, rb: 3.4 }, { z: 17, y: 0.3, rx: 10.2, ry: 4.6, rb: 3 }, { z: 22, y: -0.2, rx: 6.2, ry: 2.8, rb: 2.1 }], 8), 0.25, 7), plate(shell2), 0.06)];
-    const PW = [12.6, 12.9, 12.1, 10.6, 8.6], PH = [5.3, 5.7, 5.5, 4.9, 4.1];
+    const PW = [12.6, 12.9, 12.1, 10.6, 8.6], PH2 = [5.3, 5.7, 5.5, 4.9, 4.1];
     for (let i = 0; i < 5; i++) {
-      const z0 = 4.4 - i * 4.5, w1 = i < 4 ? PW[i + 1] : 6.4, h1 = i < 4 ? PH[i + 1] : 3.2;
-      list.push(paint(jitter(loft([{ z: z0 - 5.4, y: 0.4, rx: w1 * 0.97, ry: h1 * 0.95, rb: 2.6 }, { z: z0, y: 0.5, rx: PW[i], ry: PH[i], rb: 2.9 }], 8), 0.2, 20 + i), plate(i % 2 ? shell2 : shellDk), 0.06));
+      const z0 = 4.4 - i * 4.5, w1 = i < 4 ? PW[i + 1] : 6.4, h1 = i < 4 ? PH2[i + 1] : 3.2;
+      list.push(paint(jitter(loft([{ z: z0 - 5.4, y: 0.4, rx: w1 * 0.97, ry: h1 * 0.95, rb: 2.6 }, { z: z0, y: 0.5, rx: PW[i], ry: PH2[i], rb: 2.9 }], 8), 0.2, 20 + i), plate(i % 2 ? shell2 : shellDk), 0.06));
     }
     list.push(paint(xf(gBox(17, 0.5, 2.6), 0, 5.75, 11, 0, 0.18, 0), c3("k-crimson"), 0.05), paint(xf(gBox(3.2, 0.5, 2.2), -3.8, 5.9, 6.4, 0, -0.3, 0), c3("k-crimson"), 0.05));
     list.push(paint(xf(gCyl(0.38, 0.38, 8, 4), 5.2, 9, -3.5, 0.5, 0, -0.5), c3("k-wood-1"), 0.05), paint(xf(gBox(0.2, 2, 1.7), 7.1, 12.1, -5.3, 0.5, 0, -0.5), c3("k-crimson"), 0.03));

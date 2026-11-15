@@ -3894,7 +3894,7 @@ h3 {
   }
   var KC = { CALM: 0, BLOCK: 1, DODGE: 2, CUT: 3, OPEN: 4, FLEE: 5, PIERCE: 6, HEAL: 7, SHIELD: 8 };
   function threatNow(m) {
-    const b = m.boar, M = MON[b.type], pr = (T) => clamp(1 - b.t / (T || 1), 0, 1);
+    const b = m.boar, M = MON[b.type], pr = (T4) => clamp(1 - b.t / (T4 || 1), 0, 1);
     if (b.shot) return [KC.BLOCK, 1];
     switch (b.mode) {
       case "swipe":
@@ -4163,8 +4163,8 @@ h3 {
     m.decisions.push({ use: c.use, s: c.s, f: c.f, a: c.a, sk: c.sk, wt: c.wt, ld: c.ld, avail: c.mask, t: m.time, explore: c.explore, tryNew: c.tryNew, blocked: false, recall: c.recall, avoid: c.avoid, sc: c.sc });
     m.events.push({ type: "decide", s: c.s, a: c.a, explore: c.explore, blocked: false });
   }
-  function couldUse(mk, mm) {
-    const ok = (a) => mk.avail === void 0 || mk.avail >> a & 1, L = mk.ld;
+  function couldUse(mk2, mm) {
+    const ok = (a) => mk2.avail === void 0 || mk2.avail >> a & 1, L = mk2.ld;
     if (mm.a >= 4 && mm.sk) {
       const i = L ? L.act.indexOf(mm.sk) : -1;
       return i >= 0 && ok(4 + i);
@@ -4174,18 +4174,18 @@ h3 {
   }
   function teach(brain, marks) {
     const log = [];
-    for (const mk of marks) {
-      const { f, a, sign, avail } = mk;
+    for (const mk2 of marks) {
+      const { f, a, sign, avail } = mk2;
       if (!f) continue;
       const near = brain.mem.map((mm2) => ({ mm: mm2, s: similar(f, mm2.f) })).filter((x) => x.s >= C.SAME);
-      const idOf = (x) => x.a >= 4 && x.sk ? "sk:" + x.sk : x.a, me = idOf(mk);
+      const idOf = (x) => x.a >= 4 && x.sk ? "sk:" + x.sk : x.a, me = idOf(mk2);
       for (const { mm: mm2 } of near) if (idOf(mm2) === me && mm2.sign !== sign) {
         mm2.w -= 1;
         log.push({ kind: mm2.w <= 0 ? "forget" : "weaken", ...memRef(mm2, mm2.f), f: mm2.f });
       }
       let rival = 0;
       if (sign > 0) {
-        for (const { mm: mm2 } of near) if (idOf(mm2) !== me && mm2.sign > 0 && couldUse(mk, mm2)) {
+        for (const { mm: mm2 } of near) if (idOf(mm2) !== me && mm2.sign > 0 && couldUse(mk2, mm2)) {
           rival = Math.max(rival, mm2.w);
           mm2.w -= 1;
           log.push({ kind: mm2.w <= 0 ? "forget" : "weaken", ...memRef(mm2, mm2.f), f: mm2.f });
@@ -4197,12 +4197,12 @@ h3 {
         mm = same.mm;
         mm.w = Math.min(3, mm.w + 1);
         mm.f = f;
-        mm.wt = mk.wt || mm.wt;
-        mm.round = mk.round || 0;
-        mm.t = Math.round((mk.t || 0) * 10) / 10;
+        mm.wt = mk2.wt || mm.wt;
+        mm.round = mk2.round || 0;
+        mm.t = Math.round((mk2.t || 0) * 10) / 10;
         log.push({ kind: "strong", ...memRef(mm, f), f });
       } else {
-        mm = { id: brain.next++, f, a, sk: mk.sk || null, wt: mk.wt || null, sign: sign > 0 ? 1 : -1, w: Math.min(3, Math.max(1, rival)), round: mk.round || 0, t: Math.round((mk.t || 0) * 10) / 10 };
+        mm = { id: brain.next++, f, a, sk: mk2.sk || null, wt: mk2.wt || null, sign: sign > 0 ? 1 : -1, w: Math.min(3, Math.max(1, rival)), round: mk2.round || 0, t: Math.round((mk2.t || 0) * 10) / 10 };
         brain.mem.push(mm);
         log.push({ kind: "new", ...memRef(mm, f), f });
       }
@@ -4627,7 +4627,7 @@ h3 {
       }
     }
     if (h.downT > 0) {
-      const T = C.DOWN_FLY + C.DOWN_LIE + C.DOWN_UP, el2 = T - h.downT, sp = 2 * C.DOWN_DIST / C.DOWN_FLY;
+      const T4 = C.DOWN_FLY + C.DOWN_LIE + C.DOWN_UP, el2 = T4 - h.downT, sp = 2 * C.DOWN_DIST / C.DOWN_FLY;
       if (el2 < C.DOWN_FLY) {
         const k = 1 - el2 / C.DOWN_FLY;
         h.vx = h.downX * sp * k;
@@ -6987,7 +6987,7 @@ h3 {
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       if (p.kind === "shield") {
-        const t = Math.min(1, age / p.max), grow = (u) => 0.3 + 1.2 * (1 - Math.pow(1 - Math.max(0, u), 3));
+        const t = Math.min(1, age / p.max), grow2 = (u) => 0.3 + 1.2 * (1 - Math.pow(1 - Math.max(0, u), 3));
         const fade = (u) => u < 0.1 ? Math.max(0, u) / 0.1 : Math.pow(Math.max(0, 1 - (u - 0.1) / 0.9), 1.1);
         const img = shieldImg(), base = p.size * Math.min(1.2, S2) * 2.2, blur = "filter" in ctx;
         ctx.save();
@@ -6996,7 +6996,7 @@ h3 {
         for (const [lag, k2] of [[0.16, 0.35], [0.08, 0.6], [0, 1]]) {
           const u = t - lag;
           if (u <= 0) continue;
-          const H = base * grow(u), Wd = H * SH_W / SH_H, a = fade(u) * k2 * (p.small ? 0.55 : 1);
+          const H = base * grow2(u), Wd = H * SH_W / SH_H, a = fade(u) * k2 * (p.small ? 0.55 : 1);
           if (blur) ctx.filter = `blur(${(0.6 + Math.max(0, u - 0.2) * 3.5).toFixed(2)}px)`;
           if (!lag) {
             ctx.globalCompositeOperation = "source-over";
@@ -7520,7 +7520,943 @@ h3 {
     }
     return follow(s, s.x + angDiff(target, s.x), k, 1);
   }
-  var bands = (y, y0, step2, a, b) => Math.floor((y - y0) / step2) % 2 === 0 ? a : b;
+
+  // src/render/geo2.js
+  var T = T3;
+  var _cc2 = {};
+  var C3 = (h) => _cc2[h] || (_cc2[h] = new T.Color(h).convertSRGBToLinear());
+  var clamp2 = (v, a, b) => Math.max(a, Math.min(b, v));
+  var sstep = (a, b, x) => {
+    const t = clamp2((x - a) / (b - a), 0, 1);
+    return t * t * (3 - 2 * t);
+  };
+  var gauss = (d, w) => Math.exp(-(d * d) / (w * w));
+  var mix2 = (a, b, t) => a.clone().lerp(b, clamp2(t, 0, 1));
+  var hash = (x, y, z) => {
+    const s = Math.sin(x * 12.9898 + y * 78.233 + z * 37.719) * 43758.5453;
+    return s - Math.floor(s);
+  };
+  function vnoise(x, y, z) {
+    const X = Math.floor(x), Y = Math.floor(y), Z = Math.floor(z), fx2 = x - X, fy = y - Y, fz = z - Z;
+    const u = fx2 * fx2 * (3 - 2 * fx2), v = fy * fy * (3 - 2 * fy), w = fz * fz * (3 - 2 * fz), h = (i, j, k) => hash(X + i, Y + j, Z + k), l = (a, b, t) => a + (b - a) * t;
+    return l(l(l(h(0, 0, 0), h(1, 0, 0), u), l(h(0, 1, 0), h(1, 1, 0), u), v), l(l(h(0, 0, 1), h(1, 0, 1), u), l(h(0, 1, 1), h(1, 1, 1), u), v), w);
+  }
+  function mk(pos, idx) {
+    const g = new T.BufferGeometry();
+    g.setAttribute("position", new T.Float32BufferAttribute(pos, 3));
+    g.setIndex(idx);
+    return g;
+  }
+  function weld(g) {
+    const p = g.attributes.position, map = /* @__PURE__ */ new Map(), np = [], remap = [];
+    for (let i = 0; i < p.count; i++) {
+      const k = Math.round(p.getX(i) * 1e3) + "," + Math.round(p.getY(i) * 1e3) + "," + Math.round(p.getZ(i) * 1e3);
+      let j = map.get(k);
+      if (j === void 0) {
+        j = np.length / 3;
+        map.set(k, j);
+        np.push(p.getX(i), p.getY(i), p.getZ(i));
+      }
+      remap.push(j);
+    }
+    const oi = g.index ? Array.from(g.index.array) : [...Array(p.count).keys()], idx = [];
+    for (let t = 0; t < oi.length; t += 3) {
+      const a = remap[oi[t]], b = remap[oi[t + 1]], c = remap[oi[t + 2]];
+      if (a !== b && b !== c && a !== c) idx.push(a, b, c);
+    }
+    return mk(np, idx);
+  }
+  var _M = new T.Matrix4();
+  var _Q = new T.Quaternion();
+  var _E = new T.Euler();
+  var _V = new T.Vector3();
+  var _S = new T.Vector3();
+  function xf2(g, px = 0, py = 0, pz = 0, rx = 0, ry = 0, rz = 0, sx = 1, sy = sx, sz = sx) {
+    _M.compose(_V.set(px, py, pz), _Q.setFromEuler(_E.set(rx, ry, rz, "YXZ")), _S.set(sx, sy, sz));
+    g.applyMatrix4(_M);
+    return g;
+  }
+  function deform(g, fn) {
+    const p = g.attributes.position, v = new T.Vector3();
+    for (let i = 0; i < p.count; i++) {
+      v.fromBufferAttribute(p, i);
+      fn(v);
+      p.setXYZ(i, v.x, v.y, v.z);
+    }
+    return g;
+  }
+  function fin(g, col, w = true) {
+    if (g.attributes.uv) g.deleteAttribute("uv");
+    if (g.attributes.normal) g.deleteAttribute("normal");
+    if (w) g = weld(g);
+    else if (!g.index) g.setIndex([...Array(g.attributes.position.count).keys()]);
+    g.computeVertexNormals();
+    const p = g.attributes.position, n = g.attributes.normal, arr = new Float32Array(p.count * 3), c = new T.Color();
+    for (let i = 0; i < p.count; i++) {
+      c.copy(typeof col === "function" ? col(p.getX(i), p.getY(i), p.getZ(i), n.getX(i), n.getY(i), n.getZ(i)) : col);
+      arr[i * 3] = c.r;
+      arr[i * 3 + 1] = c.g;
+      arr[i * 3 + 2] = c.b;
+    }
+    g.setAttribute("color", new T.BufferAttribute(arr, 3));
+    return g;
+  }
+  var cr = (p0, p1, p2, p3, t) => 0.5 * (2 * p1 + (-p0 + p2) * t + (2 * p0 - 5 * p1 + 4 * p2 - p3) * t * t + (-p0 + 3 * p1 - 3 * p2 + p3) * t * t * t);
+  function resample(S3, m) {
+    const keys = ["y", "x", "z", "rx", "rf", "rb", "p"], out = [];
+    const get = (i, k) => {
+      const s = S3[clamp2(i, 0, S3.length - 1)];
+      return s[k] !== void 0 ? s[k] : k === "p" ? 2 : 0;
+    };
+    for (let i = 0; i < S3.length - 1; i++) for (let j = 0; j < m; j++) {
+      const t = j / m, o = {};
+      for (const k of keys) o[k] = cr(get(i - 1, k), get(i, k), get(i + 1, k), get(i + 2, k), t);
+      if (i === 0 && j === 0 && S3[0].d !== void 0) o.d = S3[0].d;
+      out.push(o);
+    }
+    out.push({ ...S3[S3.length - 1] });
+    return out;
+  }
+  function capD(s) {
+    return s.d !== void 0 ? s.d : 0.55 * Math.min(s.rx, (s.rf + s.rb) / 2);
+  }
+  function ringPts(s, n, k = 1, dy = 0, rot = 0) {
+    const pts = [], e = 2 / (s.p || 2);
+    for (let i = 0; i < n; i++) {
+      const a = i / n * P2 * 2 + rot, sn = Math.sin(a), cs = Math.cos(a);
+      const sx = Math.sign(sn) * Math.pow(Math.abs(sn), e), cz = Math.sign(cs) * Math.pow(Math.abs(cs), e);
+      pts.push([(s.x || 0) + sx * s.rx * k, s.y + dy, (s.z || 0) + cz * (cs >= 0 ? s.rf : s.rb) * k]);
+    }
+    return pts;
+  }
+  function tube(secs, n = 16, o = {}) {
+    let S3 = [...secs].sort((a, b) => a.y - b.y);
+    if (o.res) S3 = resample(S3, o.res);
+    const c0 = o.cap0 === void 0 ? "dome" : o.cap0, c1 = o.cap1 === void 0 ? "dome" : o.cap1, rot = o.rot || 0;
+    const caps = (s, dir, type) => {
+      if (type !== "dome") return [];
+      const d = capD(s), out = [];
+      for (let j = 1; j <= 3; j++) {
+        const th = j / 4 * P2 / 2;
+        out.push(ringPts(s, n, Math.cos(th), dir * d * Math.sin(th), rot));
+      }
+      return out;
+    };
+    const rings = [...caps(S3[0], -1, c0).reverse(), ...S3.map((s) => ringPts(s, n, 1, 0, rot)), ...caps(S3[S3.length - 1], 1, c1)];
+    const pos = [], idx = [];
+    for (const r of rings) for (const p of r) pos.push(...p);
+    for (let r = 0; r < rings.length - 1; r++) for (let i = 0; i < n; i++) {
+      const j = (i + 1) % n, A2 = r * n + i, B = (r + 1) * n + i, Cc = r * n + j, D2 = (r + 1) * n + j;
+      idx.push(A2, Cc, B, Cc, D2, B);
+    }
+    const pole = (s, dir, type, ri) => {
+      if (!type) return;
+      const d = type === "dome" ? capD(s) : 0, pi = pos.length / 3;
+      pos.push(s.x || 0, s.y + dir * d, s.z || 0);
+      for (let i = 0; i < n; i++) {
+        const j = (i + 1) % n;
+        if (dir < 0) idx.push(pi, ri * n + j, ri * n + i);
+        else idx.push(pi, ri * n + i, ri * n + j);
+      }
+    };
+    pole(S3[0], -1, c0, 0);
+    pole(S3[S3.length - 1], 1, c1, rings.length - 1);
+    return mk(pos, idx);
+  }
+  function secAt(secs, y) {
+    const S3 = [...secs].sort((a, b) => a.y - b.y);
+    if (y <= S3[0].y) return { ...S3[0] };
+    if (y >= S3[S3.length - 1].y) return { ...S3[S3.length - 1] };
+    for (let i = 0; i < S3.length - 1; i++) if (y <= S3[i + 1].y) {
+      const a = S3[i], b = S3[i + 1], t = (y - a.y) / (b.y - a.y), o = { y };
+      for (const k of ["x", "z", "rx", "rf", "rb"]) o[k] = (a[k] || 0) + ((b[k] || 0) - (a[k] || 0)) * t;
+      return o;
+    }
+  }
+  var grow = (s, d) => ({ ...s, rx: s.rx + d, rf: s.rf + d, rb: s.rb + d });
+  function sleeve(secs, y0, y1, d, steps = 8, n = 16, extra) {
+    const L = [];
+    for (let i = 0; i <= steps; i++) {
+      const y = y0 + (y1 - y0) * i / steps;
+      L.push(grow(secAt(secs, y), d + (extra ? extra(i / steps, y) : 0)));
+    }
+    return tube(L, n, { cap0: null, cap1: null });
+  }
+  function bevelRing(secs, y0, y1, d, bev = 0.22, n = 18) {
+    const a = secAt(secs, y0), b = secAt(secs, y1);
+    return tube([{ ...grow(a, d - bev), y: y0 }, { ...grow(a, d), y: y0 + bev }, { ...grow(b, d), y: y1 - bev }, { ...grow(b, d - bev), y: y1 }], n, { cap0: null, cap1: null });
+  }
+  var ell = (rx, ry, rz, ws2 = 16, hs = 12) => xf2(new T.SphereGeometry(1, ws2, hs), 0, 0, 0, 0, 0, 0, rx, ry, rz);
+  function rbox(w, h, d, r, seg = 3) {
+    const g = new T.BoxGeometry(w, h, d, seg * 2, seg * 2, seg * 2), p = g.attributes.position, hx = w / 2 - r, hy = h / 2 - r, hz = d / 2 - r;
+    for (let i = 0; i < p.count; i++) {
+      const x = p.getX(i), y = p.getY(i), z = p.getZ(i), cx = clamp2(x, -hx, hx), cy = clamp2(y, -hy, hy), cz = clamp2(z, -hz, hz), dx = x - cx, dy = y - cy, dz = z - cz, L = Math.hypot(dx, dy, dz) || 1;
+      p.setXYZ(i, cx + dx / L * r, cy + dy / L * r, cz + dz / L * r);
+    }
+    return g;
+  }
+  function shell(secs, a0, a1, n, th) {
+    const S3 = [...secs].sort((a, b) => a.y - b.y), cols = n + 1, pos = [], idx = [];
+    const pt = (s, a, k) => {
+      const sn = Math.sin(a), cs = Math.cos(a);
+      return [(s.x || 0) + sn * (s.rx - k), s.y, (s.z || 0) + cs * ((cs >= 0 ? s.rf : s.rb) - k)];
+    };
+    const grid = (k) => {
+      const b = pos.length / 3;
+      for (const s of S3) for (let i = 0; i < cols; i++) pos.push(...pt(s, a0 + (a1 - a0) * i / n, k));
+      return b;
+    };
+    const o = grid(0), q = grid(th);
+    for (let r = 0; r < S3.length - 1; r++) for (let i = 0; i < n; i++) {
+      const A2 = r * cols + i, B = (r + 1) * cols + i, Cc = r * cols + i + 1, D2 = (r + 1) * cols + i + 1;
+      idx.push(o + A2, o + Cc, o + B, o + Cc, o + D2, o + B);
+      idx.push(q + A2, q + B, q + Cc, q + Cc, q + B, q + D2);
+    }
+    const edge = (pa, pb, qa, qb) => {
+      const b = pos.length / 3;
+      pos.push(...pa, ...pb, ...qa, ...qb, ...pa, ...pb, ...qa, ...qb);
+      idx.push(b, b + 1, b + 3, b, b + 3, b + 2, b + 4, b + 7, b + 5, b + 4, b + 6, b + 7);
+    };
+    const P32 = (b, r, i) => pos.slice((b + r * cols + i) * 3, (b + r * cols + i) * 3 + 3);
+    for (let r = 0; r < S3.length - 1; r++) {
+      edge(P32(o, r, 0), P32(o, r + 1, 0), P32(q, r, 0), P32(q, r + 1, 0));
+      edge(P32(o, r, n), P32(o, r + 1, n), P32(q, r, n), P32(q, r + 1, n));
+    }
+    for (let i = 0; i < n; i++) {
+      edge(P32(o, 0, i), P32(o, 0, i + 1), P32(q, 0, i), P32(q, 0, i + 1));
+      const L = S3.length - 1;
+      edge(P32(o, L, i), P32(o, L, i + 1), P32(q, L, i), P32(q, L, i + 1));
+    }
+    return mk(pos, idx);
+  }
+  function ribbon(pts, nrm, w, th) {
+    const pos = [], idx = [], N = pts.length, t = new T.Vector3(), b = new T.Vector3(), nn = new T.Vector3();
+    for (let i = 0; i < N; i++) {
+      t.subVectors(pts[Math.min(N - 1, i + 1)], pts[Math.max(0, i - 1)]).normalize();
+      b.crossVectors(t, nrm[i]).normalize();
+      nn.crossVectors(b, t).normalize();
+      if (nn.dot(nrm[i]) < 0) nn.negate();
+      const o = pts[i].clone().addScaledVector(nn, th), u = pts[i].clone().addScaledVector(nn, -0.05);
+      for (const [p, s] of [[o, 1], [o, -1], [u, -1], [u, 1]]) {
+        const q = p.clone().addScaledVector(b, s * w / 2);
+        pos.push(q.x, q.y, q.z);
+      }
+    }
+    for (let i = 0; i < N - 1; i++) for (let k = 0; k < 4; k++) {
+      const a = i * 4 + k, c = i * 4 + (k + 1) % 4, a2 = a + 4, c2 = c + 4;
+      idx.push(a, c, a2, c, c2, a2);
+    }
+    return mk(pos, idx);
+  }
+
+  // src/render/rigs/humanModel.js
+  var T2 = T3;
+  var shd = (c, k) => c.clone().multiplyScalar(k);
+  var occl = (c, ny, k = 0.12) => shd(c, 1 - k * sstep(0, -0.9, ny));
+  var LEG = 10.5;
+  var bone = (parent, x = 0, y = 0, z = 0, order) => {
+    const b = new T2.Bone();
+    b.position.set(x, y, z);
+    if (order) b.rotation.order = order;
+    parent.add(b);
+    return b;
+  };
+  function makeSkeleton(rig) {
+    const hips = bone(rig, 0, 25, 0, "YXZ");
+    const waist = bone(hips, 0, 2.6, 0), spine = bone(waist, 0, 0, 0, "YXZ"), chest = bone(spine, 0, 9.5, 0);
+    const neck = bone(spine, 0, 14.2, 0.1, "YXZ"), head = bone(neck, 0, 1.2, 0.2, "YXZ"), hg = bone(head);
+    const arm = (s) => {
+      const clav = bone(spine, s * 2.2, 12.9, 0, "ZXY"), sh = bone(clav, s * 5.4, -0.6, 0, "ZXY"), el2 = bone(sh, 0, -9, 0), hd = bone(el2, 0, -8.5, 0);
+      return { clav, sh, el: el2, hd };
+    };
+    const leg = (s) => {
+      const th = bone(hips, s * 3.9, -1.5, 0), kn = bone(th, 0, -LEG, 0), ft = bone(kn, 0, -LEG, 0);
+      return { th, kn, ft };
+    };
+    return { rig, hips, waist, spine, chest, neck, head, hg, armL: arm(1), armR: arm(-1), legL: leg(1), legR: leg(-1) };
+  }
+  function makeMats() {
+    const std = (o) => new T2.MeshStandardMaterial(Object.assign({ vertexColors: true, roughness: 0.78, metalness: 0 }, o));
+    const s = { m: std({ skinning: true }), c: std({ skinning: true, side: T2.DoubleSide, roughness: 0.86 }), k: std({ skinning: true, roughness: 0.4, metalness: 0.45 }) };
+    const r = { m: std({}), c: std({ side: T2.DoubleSide, roughness: 0.86 }), k: std({ roughness: 0.4, metalness: 0.45 }) };
+    return { s, r, all: [s.m, s.c, s.k, r.m, r.c, r.k] };
+  }
+  function mergeGeos(list) {
+    let nv = 0;
+    for (const g of list) nv += g.attributes.position.count;
+    const pos = new Float32Array(nv * 3), nor = new Float32Array(nv * 3), col = new Float32Array(nv * 3), idx = [];
+    let o = 0;
+    for (const g of list) {
+      pos.set(g.attributes.position.array, o * 3);
+      nor.set(g.attributes.normal.array, o * 3);
+      col.set(g.attributes.color.array, o * 3);
+      for (const i of g.index.array) idx.push(i + o);
+      o += g.attributes.position.count;
+    }
+    const out = new T2.BufferGeometry();
+    out.setAttribute("position", new T2.BufferAttribute(pos, 3));
+    out.setAttribute("normal", new T2.BufferAttribute(nor, 3));
+    out.setAttribute("color", new T2.BufferAttribute(col, 3));
+    out.setIndex(idx);
+    return out;
+  }
+  function rigidMesh(parent, L, mats) {
+    let n = 0;
+    for (const k of ["m", "c", "k"]) if (L[k] && L[k].length) {
+      const m = new T2.Mesh(mergeGeos(L[k]), mats.r[k]);
+      m.castShadow = true;
+      parent.add(m);
+      n += m.geometry.index.count / 3;
+    }
+    return n;
+  }
+  function weightField(J) {
+    const F = /* @__PURE__ */ new Map(), L = [J.legL, J.legR], A2 = [J.armL, J.armR];
+    F.set(J.hips, (x, y) => {
+      const o = [];
+      for (const [i, s] of [[0, 1], [1, -1]]) {
+        const k = 0.55 * sstep(-2, -4.6, y) * sstep(0.8, 3.2, x * s);
+        if (k > 0) o.push([L[i].th, k]);
+      }
+      return o;
+    });
+    F.set(J.spine, (x, y, z) => {
+      const o = [[J.hips, 0.6 * sstep(1.2, -1.4, y)], [J.chest, 0.6 * gauss(y - 9.6, 2.6) * (z > -1 ? 1 : 0.5)]];
+      const hw = 0.7 * sstep(16.4, 18, y);
+      o.push([J.head, hw], [J.neck, Math.max(0, sstep(14, 16, y) - hw)]);
+      for (const [i, s] of [[0, 1], [1, -1]]) o.push([A2[i].clav, 0.6 * sstep(4.2, 6.6, x * s) * gauss(y - 12.6, 2.2)]);
+      return o;
+    });
+    F.set(J.hg, (x, y, z) => [[J.neck, 0.5 * sstep(3, 0.8, y) * sstep(0.3, -2, z)]]);
+    for (const l of L) {
+      F.set(l.th, (x, y) => [[J.hips, 0.45 * sstep(-0.8, 1.6, y)], [l.kn, sstep(-8.6, -12.4, y)]]);
+      F.set(l.kn, (x, y) => [[l.th, sstep(-1.9, 1.9, y)], [l.ft, sstep(-9.4, -11.6, y)]]);
+      F.set(l.ft, (x, y, z) => [[l.kn, sstep(-0.4, 1.8, y) * (z < 1.2 ? 1 : 0.4)]]);
+    }
+    for (const a of A2) {
+      F.set(a.sh, (x, y) => [[a.clav, 0.55 * sstep(-1, 2.6, y)], [a.el, sstep(-7.2, -10.8, y)]]);
+      F.set(a.el, (x, y) => [[a.sh, sstep(-1.8, 1.8, y)], [a.hd, sstep(-7.4, -9.6, y)]]);
+      F.set(a.hd, (x, y) => [[a.el, 0.5 * sstep(-1, 0.6, y)]]);
+    }
+    return F;
+  }
+  function skinPieces(J, pieces, mats) {
+    const rig = J.rig;
+    rig.updateMatrixWorld(true);
+    const bones = [];
+    rig.traverse((o) => {
+      if (o.isBone) bones.push(o);
+    });
+    const bi = new Map(bones.map((b, i) => [b, i])), F = weightField(J), inv = new T2.Matrix4().copy(rig.matrixWorld).invert();
+    const out = { meshes: [], tris: 0 }, M = new T2.Matrix4(), N = new T2.Matrix3(), v = new T2.Vector3(), n = new T2.Vector3();
+    for (const key2 of ["m", "c", "k"]) {
+      const ps = pieces.filter((p) => p.mat === key2);
+      if (!ps.length) continue;
+      let nv = 0;
+      for (const p of ps) nv += p.geo.attributes.position.count;
+      const pos = new Float32Array(nv * 3), nor = new Float32Array(nv * 3), col = new Float32Array(nv * 3), si = new Uint16Array(nv * 4), sw = new Float32Array(nv * 4), idx = [];
+      let o = 0;
+      for (const p of ps) {
+        const g = p.geo, gp = g.attributes.position, gn = g.attributes.normal, f = p.rigid ? null : F.get(p.bone);
+        M.multiplyMatrices(inv, p.bone.matrixWorld);
+        N.getNormalMatrix(M);
+        col.set(g.attributes.color.array, o * 3);
+        for (let i = 0; i < gp.count; i++) {
+          v.fromBufferAttribute(gp, i);
+          const ws2 = f ? f(v.x, v.y, v.z).filter((e) => e[1] > 4e-3) : [];
+          let tot = 0;
+          for (const e of ws2) tot += e[1];
+          const sc = tot > 0.95 ? 0.95 / tot : 1;
+          const list = [[p.bone, 1 - tot * sc], ...ws2.map((e) => [e[0], e[1] * sc])].sort((a, b) => b[1] - a[1]).slice(0, 4);
+          let sum = 0;
+          for (const e of list) sum += e[1];
+          for (let k = 0; k < 4; k++) {
+            si[(o + i) * 4 + k] = list[k] ? bi.get(list[k][0]) : 0;
+            sw[(o + i) * 4 + k] = list[k] ? list[k][1] / sum : 0;
+          }
+          v.applyMatrix4(M);
+          pos[(o + i) * 3] = v.x;
+          pos[(o + i) * 3 + 1] = v.y;
+          pos[(o + i) * 3 + 2] = v.z;
+          n.fromBufferAttribute(gn, i).applyMatrix3(N).normalize();
+          nor[(o + i) * 3] = n.x;
+          nor[(o + i) * 3 + 1] = n.y;
+          nor[(o + i) * 3 + 2] = n.z;
+        }
+        for (const k of g.index.array) idx.push(k + o);
+        o += gp.count;
+      }
+      const geo = new T2.BufferGeometry();
+      geo.setAttribute("position", new T2.BufferAttribute(pos, 3));
+      geo.setAttribute("normal", new T2.BufferAttribute(nor, 3));
+      geo.setAttribute("color", new T2.BufferAttribute(col, 3));
+      geo.setAttribute("skinIndex", new T2.Uint16BufferAttribute(si, 4));
+      geo.setAttribute("skinWeight", new T2.Float32BufferAttribute(sw, 4));
+      geo.setIndex(idx);
+      const mesh = new T2.SkinnedMesh(geo, mats.s[key2]);
+      mesh.castShadow = true;
+      mesh.frustumCulled = false;
+      rig.add(mesh);
+      mesh.updateMatrixWorld(true);
+      mesh.bind(new T2.Skeleton(bones), mesh.matrixWorld);
+      out.meshes.push(mesh);
+      out.tris += idx.length / 3;
+    }
+    return out;
+  }
+  var BASE = {
+    white: "#F2EEE6",
+    pupil: "#120C08",
+    lash: "#26170F",
+    mouth: "#45201A",
+    tooth: "#F1E9D0",
+    linen: "#E4D9BE",
+    linenDk: "#B3A27E",
+    lea: "#7A4C2C",
+    leaDk: "#4A2D19",
+    leaHi: "#A36B41",
+    rope: "#B89A62",
+    red: "#B3362A",
+    redDk: "#741F17",
+    trim: "#D6A94F",
+    bronze: "#C9923F",
+    bronzeDk: "#7A5222",
+    bronzeHi: "#EDC779",
+    iron: "#858B91",
+    ironDk: "#4A4F55",
+    wood: "#BA8049",
+    woodDk: "#83522A",
+    woodLt: "#D7A46A"
+  };
+  var KINDS = {
+    knight: { skin: "#D9A27A", skinDk: "#AE7350", skinWarm: "#E2967A", stubble: "#8E6C58", lip: "#B46A58", hair: "#3A2618", hairHi: "#5E3E26", iris: "#5B3A22", sclera: "#F2EEE6", brow: "#3A2618" },
+    goblin: { skin: "#7FA046", skinDk: "#56742C", skinWarm: "#93AE52", stubble: "#6A8A3A", lip: "#4C6628", hair: "#2B3320", hairHi: "#46522E", iris: "#120C08", sclera: "#EBD457", brow: "#2B3320", band: "#3A3028", bandDk: "#241D17" },
+    hob: { skin: "#4F7A2E", skinDk: "#365A1E", skinWarm: "#5E8A38", stubble: "#3E5E26", lip: "#30491C", hair: "#241612", hairHi: "#3A2A20", iris: "#120C08", sclera: "#EBD457", brow: "#1E2416", helm: "#6B4A2C", helmDk: "#4A3220", stitch: "#C9B38A" },
+    orc: {
+      skin: "#7C8656",
+      skinDk: "#5A6438",
+      skinWarm: "#8A9460",
+      stubble: "#5E6844",
+      lip: "#56483A",
+      hair: "#1D1712",
+      hairHi: "#2E241C",
+      iris: "#D8452E",
+      sclera: "#E6CFA6",
+      brow: "#1D1712",
+      pants: "#3E3A33",
+      pantsDk: "#2B2823",
+      boot: "#4A3324",
+      fur: "#7A6248",
+      furDk: "#584633",
+      olea: "#5A3B26",
+      oiron: "#6F777C",
+      paint: "#8A2F2A",
+      glass: "#B8334A",
+      cork: "#8A6A44"
+    }
+  };
+  function buildHuman(kind, J, mats) {
+    const isKn = kind === "knight", isG = kind === "goblin", isHob = kind === "hob", isOrc = kind === "orc", gob = isG || isHob;
+    const K = {};
+    for (const [k, v] of Object.entries({ ...BASE, ...KINDS[kind] })) K[k] = C3(v);
+    const pieces = [], add = (b, geo, mat2 = "m", rigid = false) => pieces.push({ bone: b, geo, mat: mat2, rigid }), put = (b, L, rigid) => {
+      for (const k of ["m", "c", "k"]) for (const g of L[k] || []) add(b, g, k, rigid);
+    };
+    let rigidTris = 0;
+    const solid = (parent, L) => {
+      rigidTris += rigidMesh(parent, L, mats);
+    };
+    const rc = new T2.Raycaster(), Hz = isG ? 1.32 : isHob ? 1.16 : isOrc ? 1.12 : 1.09;
+    const BW = isG ? 0.86 : isHob ? 1.08 : isOrc ? 1.12 : 1, LW = isG ? 0.84 : isHob ? 1.06 : isOrc ? 1.1 : 1;
+    const skin = K.skin, skinCol = (x, y, z, nx, ny) => occl(skin, ny, 0.16);
+    const flaps = [], tails = [];
+    const pelvisSecs = [{ y: -4.7, rx: 3.5, rf: 2.3, rb: 2.9, d: 0.7 }, { y: -3.3, rx: 4.8, rf: 3.5, rb: 3.95 }, { y: -0.8, rx: 5.45, rf: 4, rb: 4.45 }, { y: 1.2, rx: 5.45, rf: 3.95, rb: 4.35 }].map((s) => ({ ...s, rx: s.rx * BW, rf: s.rf * BW, rb: s.rb * BW }));
+    const beltR = { rx: 5.5 * BW, rf: 4 * BW, rb: 4.4 * BW };
+    const pelvisCol = isKn ? (x, y, z, nx, ny) => {
+      const f = Math.sin((y * 1.5 + x * 0.55 - z * 0.3) * 1.25);
+      return occl(mix2(K.linen, K.linenDk, 0.32 * sstep(0.35, 0.95, f) + 0.25 * sstep(-2.5, -4.6, y)), ny, 0.2);
+    } : isOrc ? (x, y, z, nx, ny) => occl(K.pantsDk, ny, 0.2) : (x, y, z, nx, ny) => occl(mix2(K.leaDk, K.lea, 0.4 * vnoise(x, y, z)), ny, 0.2);
+    add(J.hips, fin(tube(pelvisSecs, 14, { res: 2, cap1: "flat" }), pelvisCol));
+    const belt = (y0, y1, col, n = 18) => fin(tube([{ y: y0, ...grow(beltR, -0.15) }, { y: y0 + 0.22, ...grow(beltR, 0.12) }, { y: y1 - 0.22, ...grow(beltR, 0.08) }, { y: y1, ...grow(beltR, -0.2) }], n, { cap0: "flat", cap1: "flat" }), col);
+    if (isKn) {
+      add(J.hips, belt(0.4, 4, (x, y, z, nx, ny) => {
+        const a = Math.atan2(x, z), st = (Math.abs(y - 0.95) < 0.13 || Math.abs(y - 3.45) < 0.13) && Math.sin(a * 46) > 0.2;
+        return st ? K.leaHi : occl(mix2(K.lea, K.leaDk, 0.35 * vnoise(x * 2, y * 2, z * 2)), ny);
+      }));
+      for (let i = -2; i <= 2; i++) {
+        const a = i * 0.42, x = Math.sin(a) * (beltR.rx + 0.32), z = Math.cos(a) * (beltR.rf + 0.32), ang = Math.atan2(x / (beltR.rx * beltR.rx), z / (beltR.rf * beltR.rf)), big = i === 0;
+        add(J.hips, fin(xf2(rbox(big ? 2.5 : 1.7, big ? 2.6 : 2.15, 0.38, 0.14, 1), x, 2.2, z, 0, ang, 0), (px, py, pz, nx, ny, nz) => mix2(K.bronze, K.bronzeHi, 0.4 * sstep(0.2, 0.9, ny + nz * 0.3))), "k");
+        if (big) add(J.hips, fin(xf2(ell(0.62, 0.62, 0.3, 6, 4), x + Math.sin(ang) * 0.25, 2.2, z + Math.cos(ang) * 0.25), K.bronzeHi), "k");
+      }
+      add(J.hips, fin(xf2(ell(1.05, 0.85, 0.75, 6, 4), 3.4, 2, -4), K.linenDk));
+    } else if (isOrc) {
+      add(J.hips, belt(1.2, 3.8, (x, y, z, nx, ny) => occl(K.olea, ny)));
+      add(J.hips, fin(xf2(rbox(3.2, 2.8, 1, 0.2, 1), 0, 2.5, beltR.rf + 0.6), K.oiron), "k");
+      for (const x of [2.4, -2.4, 4.6, -4.6]) add(J.hips, fin(xf2(new T2.OctahedronGeometry(0.45), x, 2.5, Math.sqrt(Math.max(0, 1 - (x / beltR.rx) ** 2)) * beltR.rf + 0.25), K.oiron, false), "k");
+    } else {
+      add(J.hips, belt(1.6, 3, (x, y, z, nx, ny) => occl(isHob ? K.leaDk : mix2(K.rope, shd(K.rope, 0.8), sstep(0.3, 0.9, Math.sin(Math.atan2(x, z) * 22 + y * 3))), ny), 16));
+      add(J.hips, fin(xf2(ell(1.5, 1.7, 1, 6, 5), -4.4 * BW, 0.8, 2.8 * BW), (x, y, z, nx, ny) => occl(K.lea, ny, 0.3)));
+    }
+    function cloth(w0, w1, len2, z0, flare, front, colFn, rag = 3) {
+      const g = new T2.PlaneGeometry(1, 1, 6, 5), p = g.attributes.position;
+      for (let i = 0; i < p.count; i++) {
+        const u = p.getX(i) * 2, v = 0.5 - p.getY(i), w = w0 + (w1 - w0) * v;
+        let y = -v * len2;
+        if (v > 0.99) y += (Math.round((u + 1) * rag) % 2 ? 0.55 : 0) + (rag > 3 ? hash(i, 2, 3) * 0.9 : 0);
+        p.setXYZ(i, u * w / 2, y, z0 * Math.cos(u * 0.5) - z0 + v * flare + 0.22 * Math.cos(u * P2 * 2.5));
+      }
+      if (!front) xf2(g, 0, 0, 0, 0, P2, 0);
+      return fin(g, (x, y, z) => colFn(-y / len2, x / (w0 / 2)));
+    }
+    const flapBone = (ang, out, face, len2, x, y, z, ry = 0) => {
+      const b = bone(J.hips, x, y, z, "YXZ");
+      b.rotation.y = ry;
+      flaps.push({ b, ang, out, face, len: len2 });
+      return b;
+    };
+    const redCloth = (v, u) => v > 0.83 && v < 0.91 ? K.trim : v > 0.95 ? shd(K.trim, 0.85) : mix2(K.red, K.redDk, 0.45 * sstep(0.3, 1, Math.cos(u * P2 * 2.5)) + 0.3 * sstep(0.08, 0, v));
+    const leaCloth = (c) => (v, u) => mix2(c, shd(c, 0.7), 0.4 * sstep(0.3, 1, Math.cos(u * P2 * 2.5)) + 0.35 * sstep(0.75, 1, v));
+    const fs = secAt(pelvisSecs, 0.8);
+    const clothSet = isKn ? [[0, 6.6, 6, 9.2, redCloth, 3], [P2, 7.6, 7.2, 8.4, redCloth, 3]] : isG ? [[0, 5.2, 4.6, 7.4, leaCloth(K.lea), 5], [P2, 6.2, 5.6, 6.8, leaCloth(K.leaDk), 5]] : isHob ? [[0, 6.4, 5.8, 8.6, leaCloth(C3("#2C1F19")), 3], [P2, 7.4, 7, 8, leaCloth(C3("#2C1F19")), 3]] : [[0, 7, 6.6, 9, leaCloth(K.olea), 3], [P2, 7.4, 7, 9, leaCloth(K.olea), 3]];
+    for (const [ang, w0, w1, len2, col, rag] of clothSet) {
+      const front = ang === 0, b = flapBone(0, front ? 1 : -1, front ? 1 : -1, len2, 0, 0.7, (front ? 1 : -1) * ((front ? fs.rf : fs.rb) + 0.55));
+      add(b, cloth(w0 * BW, w1 * BW, len2, front ? 4.4 : 4.8, 1.1, front, col, rag), "c");
+      if (isOrc) for (const x of [-2, 2]) add(b, fin(xf2(new T2.OctahedronGeometry(0.4), x, -1.4, front ? 0.45 : -0.45), K.oiron, false), "k");
+    }
+    const sides = isKn ? [[1.15, 6.4], [1.55, 5.9]] : isG ? [[1.4, 5.6]] : [[1.4, 6.2]];
+    for (const sd of [1, -1]) for (const [aa, ln] of sides) {
+      const a = sd * aa, x = Math.sin(a) * (fs.rx + 0.45), z = Math.cos(a) * ((Math.cos(a) >= 0 ? fs.rf : fs.rb) + 0.45);
+      const b = flapBone(a, 1, Math.cos(a), ln, x, 0.9, z, a), c = isKn ? K.lea : isOrc ? K.olea : isHob ? C3("#2C1F19") : K.leaDk;
+      add(b, fin(xf2(new T2.BoxGeometry(1.55, ln, 0.32), 0, -ln / 2, 0), (px, py) => py < -ln + 0.9 ? shd(c, 0.65) : c, false));
+    }
+    const thighSecs = [{ y: 1.4, rx: 2.95, rf: 3.15, rb: 3.2, d: 1.2 }, { y: -1.6, rx: 3.15, rf: 3.4, rb: 3.2 }, { y: -5, rx: 2.8, rf: 3.05, rb: 2.75 }, { y: -8.4, rx: 2.25, rf: 2.35, rb: 2.2 }, { y: -10.6, rx: 1.9, rf: 1.95, rb: 1.95 }, { y: -11.6, rx: 1.55, rf: 1.6, rb: 1.6, d: 0.8 }].map((s) => ({ ...s, rx: s.rx * LW, rf: s.rf * LW, rb: s.rb * LW }));
+    const shinSecs = [{ y: 1.1, rx: 1.75, rf: 1.8, rb: 1.8, d: 1 }, { y: -0.2, rx: 2.15, rf: 2.2, rb: 2.2 }, { y: -2.6, rx: 2.3, rf: 2, rb: 2.85 }, { y: -5.3, rx: 2.1, rf: 1.85, rb: 2.5 }, { y: -8.3, rx: 1.6, rf: 1.6, rb: 1.7 }, { y: -10.6, rx: 1.45, rf: 1.5, rb: 1.55, d: 0.7 }].map((s) => ({ ...s, rx: s.rx * LW, rf: s.rf * LW, rb: s.rb * LW }));
+    const footSecs = [{ y: -2.3, z: 1.1, rx: 1.45, rf: 1.45, rb: 1.2, d: 0.9 }, { y: -0.6, z: 0.75, rx: 1.75, rf: 1.85, rb: 1.95 }, { y: 1.8, z: 1.35, rx: 1.9, rf: 1.25, rb: 1.25 }, { y: 3.7, z: 1.75, rx: 1.85, rf: 0.85, rb: 0.75 }, { y: 4.7, z: 1.9, rx: 1.6, rf: 0.6, rb: 0.5, d: 0.6 }].map((s) => ({ ...s, rx: s.rx * LW }));
+    const legCol = isOrc ? K.pants : skin;
+    for (const [side, l] of [[1, J.legL], [-1, J.legR]]) {
+      add(l.th, fin(tube(thighSecs, 9, { res: 1 }), (x, y, z, nx, ny, nz) => occl(isOrc ? mix2(K.pants, K.pantsDk, 0.3 * vnoise(x, y, z)) : mix2(skin, K.skinDk, 0.25 * gauss(x * side - 1, 0.6) * sstep(-1, 0.5, nz) * sstep(-9, -3, y)), ny, 0.16)));
+      add(l.kn, fin(tube(shinSecs, 9, { res: 1 }), (x, y, z, nx, ny, nz) => occl(isOrc ? y > -6.2 ? K.pants : K.boot : mix2(skin, K.skinDk, 0.18 * sstep(0.2, -0.8, nz)), ny, 0.16)));
+      if (isKn && side > 0) {
+        const gSecs = [{ y: -0.4, rx: 2.55, rf: 2.65, rb: 2.6 }, { y: -2.6, rx: 2.62, rf: 2.42, rb: 3.1 }, { y: -5.3, rx: 2.42, rf: 2.27, rb: 2.75 }, { y: -8, rx: 1.98, rf: 2.02, rb: 2.05 }, { y: -9.3, rx: 1.92, rf: 2, rb: 1.98 }];
+        add(l.kn, fin(shell(gSecs, -1.75, 1.75, 8, 0.28), (x, y, z, nx, ny, nz) => {
+          const ridge = gauss(x, 0.28) * sstep(0.5, 0.9, nz), rim = y > -0.9 || y < -8.9 || Math.abs(Math.atan2(x, z)) > 1.6;
+          return rim ? K.bronzeDk : mix2(mix2(K.bronze, K.bronzeHi, 0.5 * ridge + 0.25 * sstep(0, 0.8, nz)), K.bronzeDk, 0.25 * vnoise(x * 3, y * 3, z * 3));
+        }), "k");
+        add(l.kn, fin(xf2(new T2.SphereGeometry(1, 8, 5, 0, P2), 0, 0.25, 1.55, 0, 0, 0, 1.75, 1.95, 0.95), (x, y, z, nx, ny, nz) => mix2(K.bronze, K.bronzeHi, 0.55 * sstep(0.3, 1, nz) * sstep(-0.5, 0.6, ny))), "c");
+        add(l.kn, fin(shell([{ ...grow(secAt(shinSecs, -5.05), 0.1), y: -5.05 }, { ...grow(secAt(shinSecs, -4.15), 0.1), y: -4.15 }], 1.7, P2 * 2 - 1.7, 5, 0.12), K.leaDk), "c");
+        add(l.kn, fin(bevelRing(shinSecs, -0.9, 0.2, 0.35, 0.15, 9), K.linenDk));
+      } else if (isKn || isG) {
+        const wc = isG ? shd(K.linenDk, 0.85) : K.linen;
+        add(l.kn, fin(sleeve(shinSecs, isG ? -9.2 : -9.6, isG ? -3 : -1, 0.24, 4, 9), (x, y, z) => {
+          const a = Math.atan2(x, z) / (P2 * 2), f = ((y * 0.62 + a * 1.4) % 1 + 1) % 1;
+          return f < 0.14 ? shd(wc, 0.7) : mix2(wc, K.linenDk, 0.2 * sstep(0.5, 1, f));
+        }));
+        if (isKn) {
+          add(l.kn, fin(xf2(ell(0.9, 1, 0.4, 6, 4), 0, 0.2, 1.85), skin));
+          add(l.kn, fin(bevelRing(shinSecs, -1.3, -0.4, 0.42, 0.15, 9), K.leaDk));
+        }
+      } else if (isHob) {
+        add(l.kn, fin(sleeve(shinSecs, -10.4, -2.4, 0.3, 3, 9), (x, y, z, nx, ny) => occl(y > -3.2 ? C3("#3A2A22") : C3("#2C1F19"), ny, 0.2)));
+      } else {
+        add(l.kn, fin(bevelRing(shinSecs, -6.8, -5.2, 0.55, 0.25, 9), (x, y, z) => mix2(K.fur, K.furDk, sstep(0.3, 0.8, hash(Math.round(Math.atan2(x, z) * 4), 1, 2)))));
+      }
+      const shoe = isOrc || isHob;
+      add(l.ft, fin(xf2(tube(footSecs, 8, { res: 1 }), 0, 0, 0, P2 / 2, 0, 0), (x, y, z, nx, ny) => occl(isOrc ? K.boot : isHob ? C3("#2C1F19") : skin, ny, 0.2)));
+      if (isKn || shoe) add(l.ft, fin(xf2(rbox(4 * LW, 0.62, 8.2, 0.24, 1), 0, -2.3, 1.15), (x, y, z, nx, ny) => ny > 0.5 ? shoe ? shd(K.leaDk, 0.8) : K.leaHi : K.leaDk));
+      if (isKn) {
+        for (const z of [0.9, 2.8]) {
+          const s = secAt(footSecs, z);
+          add(l.ft, fin(xf2(tube([{ ...grow(s, 0.12), y: z - 0.3 }, { ...grow(s, 0.12), y: z + 0.3 }], 8, { cap0: null, cap1: null }), 0, 0, 0, P2 / 2, 0, 0), K.lea));
+        }
+        add(l.ft, fin(bevelRing(shinSecs.map((s) => ({ ...s, y: s.y + LEG })), 0.55, 1.25, 0.2, 0.1, 8), K.lea));
+      }
+      if (isG) for (let k = 0; k < 3; k++) add(l.ft, fin(xf2(ell(0.5, 0.42, 0.6, 5, 3), (0.9 - k * 0.85) * LW, -1.75, 4.6 - k * 0.15), skin));
+    }
+    const torsoBase = [
+      { y: -1.4, rx: 4.95, rf: 3.65, rb: 3.6, p: 2.2 },
+      { y: 1.6, rx: 5.05, rf: 3.7, rb: 3.55, p: 2.2 },
+      { y: 4.3, rx: 5.5, rf: 3.95, rb: 3.6, p: 2.3 },
+      { y: 7, rx: 6.3, rf: 4.3, rb: 3.95, p: 2.35 },
+      { y: 9.6, rx: 7, rf: 4.45, rb: 4.2, p: 2.35 },
+      { y: 11.8, rx: 7.1, rf: 4.15, rb: 4.2, p: 2.3 },
+      { y: 13.3, rx: 6.1, rf: 3.45, rb: 3.7, p: 2.2 },
+      { y: 14.6, rx: 3.5, rf: 2.55, rb: 3 },
+      { y: 15.9, rx: 2.45, rf: 2.25, rb: 2.4 },
+      { y: 18, rx: 2.25, rf: 2.1, rb: 2.2 }
+    ];
+    const belly = isG ? 0.9 : isOrc ? 1.5 : 0;
+    const torsoSecs = torsoBase.map((s) => {
+      const neckK = s.y > 14 ? 1 : BW, bl = belly * gauss(s.y - 3.2, 2.4);
+      return { ...s, rx: s.rx * neckK + bl * 0.4, rf: s.rf * (s.y > 14 ? 1 : BW * (isG ? 0.92 : 1)) + bl, rb: s.rb * neckK };
+    });
+    const muscle = isG ? 0.35 : isOrc ? 0.7 : 1;
+    const torsoG = deform(tube(torsoSecs, 16, { res: 2, cap0: "flat", cap1: "flat" }), (v) => {
+      const ax = Math.abs(v.x);
+      if (v.z > 0) {
+        v.z += 0.62 * muscle * gauss(ax - 2.9 * BW, 2.2) * gauss(v.y - 10.2, 1.7);
+        v.z -= 0.18 * gauss(v.x, 0.5) * sstep(4, 7, v.y) * sstep(12, 10, v.y);
+        v.z += 0.12 * muscle * gauss(ax - 1.2, 0.7) * (gauss(v.y - 3, 0.6) + gauss(v.y - 5.1, 0.6) + gauss(v.y - 7, 0.6));
+      } else {
+        v.z += 0.3 * gauss(v.x, 0.75) * sstep(2, 5, v.y) * sstep(13, 11, v.y);
+        v.z -= 0.32 * gauss(ax - 3.3, 1.8) * gauss(v.y - 10.4, 1.8);
+      }
+    });
+    const torsoCol = (x, y, z, nx, ny) => {
+      const ax = Math.abs(x);
+      let c = skin.clone(), k = 0.9 + 0.1 * sstep(0, 12, y);
+      if (z > 0) {
+        k -= 0.16 * muscle * gauss(ax - 2.9 * BW, 2.4) * gauss(y - 8.6, 0.65);
+        k -= 0.06 * gauss(x, 0.4) * sstep(4.5, 6, y) * sstep(11, 9.5, y);
+        if (!isG) k -= 0.08 * muscle * sstep(2.6, 1.6, ax) * (gauss(y - 4.1, 0.28) + gauss(y - 6, 0.28)) + 0.09 * gauss(x, 0.32) * sstep(0.5, 2, y) * sstep(8, 6.5, y);
+        k -= 0.3 * gauss(Math.hypot(x, y - 2.4), 0.3);
+        if (isKn) c.lerp(K.skinDk, 0.35 * gauss(ax - 2.7, 0.35) * gauss(y - 9.8, 0.35));
+      } else k -= 0.1 * gauss(x, 0.5) * sstep(2, 5, y) * sstep(13, 11, y);
+      if (isG) k -= 0.1 * sstep(3, 5.5, ax) * sstep(0.5, 0.95, Math.sin(y * 2.6)) * sstep(5, 7, y) * sstep(11.5, 10, y);
+      return occl(c.multiplyScalar(k), ny, 0.18);
+    };
+    add(J.spine, fin(torsoG, torsoCol));
+    const torsoMesh = new T2.Mesh(torsoG, new T2.MeshBasicMaterial({ side: T2.DoubleSide }));
+    const onTorso = (phi, y, out = 0.05) => {
+      const d = new T2.Vector3(Math.sin(phi), 0, Math.cos(phi));
+      rc.set(new T2.Vector3(0, y, 0), d);
+      const h = rc.intersectObject(torsoMesh)[0];
+      const p = h ? h.point.clone() : new T2.Vector3(d.x * 5, y, d.z * 4);
+      return { p: p.addScaledVector(d, out), n: d };
+    };
+    const strap = (phi0, dphi, w, col, n = 16) => {
+      const sp = [], sn = [];
+      for (let i = 0; i <= n; i++) {
+        const t = i / n, o = onTorso(phi0 + t * dphi, 0.6 + 13.6 * Math.sin(t * P2) ** 0.6);
+        sp.push(o.p);
+        sn.push(o.n);
+      }
+      return fin(ribbon(sp, sn, w, 0.32), col, false);
+    };
+    const strapCol = (c) => (x, y, z) => mix2(c, shd(c, 0.65), 0.4 * vnoise(x * 1.5, y * 1.5, z * 1.5));
+    if (isKn) {
+      add(J.spine, strap(0.75, -4.4, 1.7, strapCol(K.lea)), "c");
+      const ring2 = onTorso(-0.35, 11.6, 0.35);
+      add(J.spine, fin(xf2(new T2.TorusGeometry(0.95, 0.24, 4, 10), ring2.p.x, ring2.p.y, ring2.p.z, 0, -0.35, 0), K.bronze), "k");
+      add(J.spine, fin(xf2(ell(0.7, 0.7, 0.3, 6, 4), ring2.p.x, ring2.p.y, ring2.p.z + 0.1, 0, -0.35, 0), K.bronzeHi), "k");
+    } else if (isHob) {
+      const dk = C3("#2C1F19");
+      add(J.spine, strap(0.75, -4.4, 1.9, strapCol(dk)), "c");
+      add(J.spine, strap(-0.75, 4.4, 1.9, strapCol(dk)), "c");
+      const c0 = onTorso(0, 9.2, 0.45);
+      add(J.spine, fin(xf2(new T2.CylinderGeometry(1, 1, 0.4, 8), c0.p.x, c0.p.y, c0.p.z, P2 / 2, 0, 0), K.iron), "k");
+    } else if (isG) {
+      add(J.spine, strap(-0.9, 3.2, 1.1, strapCol(K.rope), 10), "c");
+    }
+    const potions = [];
+    if (isOrc) {
+      add(J.spine, fin(tube([{ y: 11, rx: 8.6, rf: 6.2, rb: 6 }, { y: 12.6, rx: 8.4, rf: 5.6, rb: 5.8 }, { y: 14.2, rx: 7, rf: 4.4, rb: 4.8 }, { y: 15.6, rx: 3.9, rf: 3, rb: 3.4 }], 16, { cap0: null, cap1: null }), (x, y, z) => mix2(K.fur, K.furDk, 0.5 * vnoise(x * 1.5, y * 2, z * 1.5) + 0.3 * sstep(12.2, 11, y))));
+      for (let i = 0; i < 10; i++) {
+        const an = i / 10 * P2 * 2;
+        add(J.spine, fin(xf2(new T2.ConeGeometry(1.3, 3.2, 5), Math.sin(an) * 8.2, 10.6, Math.cos(an) * 5.8, P2, 0, 0), K.furDk));
+      }
+      add(J.spine, strap(0.75, -4.4, 1.6, strapCol(K.olea)), "c");
+      const bottle = () => ({ m: [fin(xf2(new T2.CylinderGeometry(0.95, 1.05, 2.4, 6), 0, 0, 0), K.glass), fin(xf2(new T2.CylinderGeometry(0.4, 0.5, 1, 5), 0, 1.6, 0), K.glass), fin(xf2(new T2.CylinderGeometry(0.45, 0.45, 0.5, 5), 0, 2.3, 0), K.cork)] });
+      for (const t of [0.12, 0.2, 0.28, 0.36, 0.44]) {
+        const phi = 0.75 - t * 4.4, o = onTorso(phi, 0.6 + 13.6 * Math.sin(t * P2) ** 0.6, 1.1);
+        const g = new T2.Group();
+        g.position.copy(o.p);
+        g.rotation.z = -0.6;
+        J.spine.add(g);
+        solid(g, bottle());
+        potions.push(g);
+      }
+    }
+    J.hg.scale.setScalar(Hz);
+    const human = [
+      { y: 1.25, z: 2.35, rx: 1.45, rf: 1, rb: 1.35, d: 0.35 },
+      { y: 2, z: 1.75, rx: 2.75, rf: 2, rb: 2.5, p: 2.2 },
+      { y: 3.2, z: 1, rx: 3.4, rf: 3.35, rb: 3.4, p: 2.5 },
+      { y: 4.8, z: 0.55, rx: 3.9, rf: 4.15, rb: 4.15, p: 2.5 },
+      { y: 6.4, z: 0.3, rx: 4.2, rf: 4.3, rb: 4.6, p: 2.4 },
+      { y: 8, z: 0.05, rx: 4.35, rf: 4.2, rb: 4.95, p: 2.2 },
+      { y: 9.6, z: -0.3, rx: 4.1, rf: 3.6, rb: 4.85, p: 2.1 },
+      { y: 11, z: -0.55, rx: 3.3, rf: 2.6, rb: 3.9 },
+      { y: 12, z: -0.7, rx: 1.9, rf: 1.3, rb: 2.2, d: 0.6 }
+    ];
+    const headSecs = human.map((s) => {
+      if (gob) return s.y >= 6 ? { ...s, rx: s.rx * 1.08, rb: s.rb * 1.14 } : s.y < 4.5 ? { ...s, rx: s.rx * 0.88, rf: s.rf * 0.94 } : s;
+      if (isOrc) return s.y < 5 ? { ...s, rx: s.rx * 1.2, rf: s.rf * 1.06, rb: s.rb * 1.06 } : s;
+      return s;
+    });
+    const browK = isOrc ? 2.2 : gob ? 1.4 : 1;
+    const faceDeform = (v) => {
+      if (v.z <= 0) return;
+      const ax = Math.abs(v.x);
+      v.z += 0.4 * browK * gauss(v.y - 7.95, 0.55) * sstep(4.2, 2.4, ax);
+      v.z -= 0.55 * gauss(Math.hypot(ax - 1.75, (v.y - 6.5) * 1.25), 1);
+      v.z += 0.3 * gauss(Math.hypot(ax - 2.9, v.y - 5), 1.1);
+      v.x += Math.sign(v.x) * 0.15 * gauss(Math.hypot(ax - 3.4, v.y - 5.2), 1.2);
+      v.z += 0.35 * gauss(Math.hypot(v.x, (v.y - 3.3) * 0.9), 1.4);
+      v.z += (isOrc ? 0.2 : gob ? 0.15 : 0.5) * gauss(Math.hypot(v.x * 0.8, v.y - 1.95), 0.9);
+    };
+    const headG = deform(tube(headSecs, 22, { res: 2 }), faceDeform);
+    const headMesh = new T2.Mesh(headG, new T2.MeshBasicMaterial({ side: T2.DoubleSide }));
+    const sz = (x, y) => {
+      rc.set(new T2.Vector3(x, y, 20), new T2.Vector3(0, 0, -1));
+      const h = rc.intersectObject(headMesh)[0];
+      return h ? h.point.z : 4;
+    };
+    const headCol = (x, y, z, nx, ny) => {
+      const ax = Math.abs(x);
+      let c = skin.clone();
+      if (z > 0) {
+        c.lerp(K.skinWarm, 0.38 * gauss(Math.hypot(ax - 2.6, y - 4.5), 1.1));
+        if (isKn) c.lerp(K.stubble, 0.2 * sstep(4.2, 3, y) * sstep(0.8, 2.2, z) * (1 - gauss(Math.hypot(x, y - 3.25), 0.8)));
+        c.multiplyScalar(1 - 0.12 * gauss(Math.hypot(ax - 1.75, y - 6.55), 0.85));
+        if (isOrc && y < 5.9 && y > 4.2 && (Math.abs(ax - 2) < 0.17 || Math.abs(ax - 2.55) < 0.17)) c = K.paint.clone();
+      }
+      if (isOrc && z < 1 && z > -2 && y > 9.5 && Math.abs(x + 1.4 + (y - 10) * 0.3) < 0.18) c = shd(K.skinWarm, 1.15);
+      return occl(c, ny, 0.22 * sstep(5, 2, y) + 0.05);
+    };
+    const HL = { m: [fin(headG, headCol)], c: [], k: [] };
+    const noseSecs = gob ? [{ y: 7.3, z: sz(0, 7.3) - 0.3, rx: 0.5, rf: 0.3, rb: 0.3 }, { y: 6.2, z: sz(0, 6.2) + 0.35, rx: 0.6, rf: 0.7, rb: 0.45 }, { y: 5.1, z: sz(0, 5.1) + 1.25, rx: 0.65, rf: 0.9, rb: 0.55 }, { y: 4.3, z: sz(0, 4.3) + 1.6, rx: 0.55, rf: 0.7, rb: 0.5 }, { y: 3.7, z: sz(0, 3.9) + 1.25, rx: 0.4, rf: 0.45, rb: 0.35, d: 0.3 }] : isOrc ? [{ y: 7, z: sz(0, 7) - 0.3, rx: 0.6, rf: 0.3, rb: 0.3 }, { y: 6, z: sz(0, 6) - 0.05, rx: 0.75, rf: 0.55, rb: 0.45 }, { y: 5, z: sz(0, 5) + 0.25, rx: 1.15, rf: 0.75, rb: 0.55 }, { y: 4.4, z: sz(0, 4.4) + 0.1, rx: 1.25, rf: 0.55, rb: 0.5, d: 0.3 }] : [{ y: 7.25, z: sz(0, 7.25) - 0.35, rx: 0.42, rf: 0.22, rb: 0.3 }, { y: 6.4, z: sz(0, 6.4) - 0.2, rx: 0.48, rf: 0.38, rb: 0.38 }, { y: 5.45, z: sz(0, 5.45) - 0.05, rx: 0.58, rf: 0.62, rb: 0.45 }, { y: 4.85, z: sz(0, 4.85) - 0.02, rx: 0.7, rf: 0.6, rb: 0.5 }, { y: 4.52, z: sz(0, 4.52) - 0.08, rx: 0.58, rf: 0.4, rb: 0.4, d: 0.22 }];
+    HL.m.push(fin(tube(noseSecs, 7, { res: 1 }), (x, y, z, nx, ny) => occl(mix2(skin, K.skinWarm, 0.3 * sstep(5.5, 4.6, y)), ny, 0.3)));
+    for (const s of [1, -1]) {
+      if (isKn) HL.m.push(fin(xf2(ell(0.36, 0.3, 0.34, 5, 3), s * 0.58, 4.66, sz(0, 4.75) - 0.24), skin));
+      if (isOrc) HL.m.push(fin(xf2(ell(0.3, 0.2, 0.2, 5, 3), s * 0.55, 4.25, sz(0, 4.4) + 0.4), K.mouth));
+      if (gob) {
+        const ear = tube([{ y: 0, rx: 0.5, rf: 1.5, rb: 0.9 }, { y: 2.6, rx: 0.42, rf: 1.25, rb: 0.7 }, { y: 5.2, rx: 0.28, rf: 0.75, rb: 0.42 }, { y: 7.2, rx: 0.1, rf: 0.22, rb: 0.14, d: 0.2 }], 6, { res: 1 });
+        HL.m.push(fin(xf2(ear, s * 3.9, 6.4, -0.6, -0.35, s * 0.35, -s * 1.2), (x, y, z, nx) => mix2(skin, K.skinDk, 0.55 * sstep(0.2, 0.8, -nx * s + 0.3))));
+      } else if (isOrc) {
+        HL.m.push(fin(xf2(tube([{ y: 0, rx: 0.45, rf: 1.1, rb: 0.7 }, { y: 1.8, rx: 0.32, rf: 0.7, rb: 0.45 }, { y: 3.2, rx: 0.1, rf: 0.2, rb: 0.12, d: 0.15 }], 6, { res: 1 }), s * 4.9, 6, -0.6, -0.4, s * 0.3, -s * 1.1), (x, y, z, nx) => mix2(skin, K.skinDk, 0.5 * sstep(0.2, 0.8, -nx * s + 0.3))));
+      } else HL.m.push(fin(xf2(ell(0.55, 1.85, 1.25, 6, 5), s * 4.32, 6, -0.7, 0, s * 0.35, s * -0.08), (x, y, z, nx) => mix2(skin, K.skinDk, 0.6 * sstep(0.4, 0.9, nx * s))));
+    }
+    if (isOrc) for (const s of [1, -1]) HL.m.push(fin(xf2(new T2.ConeGeometry(0.5, 2.4, 5), s * 1.75, 3.5, sz(s * 1.75, 2.8) + 0.25, 0.15, 0, -s * 0.22), K.tooth));
+    const eyes = bone(J.hg, 0, 6.5, 0), irises = [], EL = { m: [] };
+    for (const s of [1, -1]) {
+      const ex = s * 1.75, ez = sz(ex, 6.5);
+      EL.m.push(fin(xf2(ell(0.8, 0.54, 0.45, 10, 5), ex, 0, ez - 0.12), K.sclera));
+      EL.m.push(fin(xf2(rbox(1.85, 0.3, 0.62, 0.13, 1), ex, 0.43, ez + 0.06, -0.35, s * 0.25, s * -0.06), K.lash));
+      const ir = bone(eyes, ex - s * 0.04, -0.02, ez + 0.24);
+      irises.push(ir);
+      const pr = gob ? 0.13 : 0.2;
+      put(ir, { m: [fin(ell(gob ? 0.3 : 0.37, gob ? 0.4 : 0.43, 0.16, 6, 4), (x, y) => Math.hypot(x, y * 0.9) < pr ? K.pupil : K.iris), fin(xf2(ell(0.085, 0.085, 0.06, 3, 2), s * 0.04 + 0.12, 0.18, 0.16), K.white)] });
+    }
+    put(eyes, EL);
+    const brows = [-1, 1].map((s) => {
+      const b = bone(J.hg, s * 1.85, 7.78 + (isOrc ? 0.15 : 0), sz(s * 1.85, 7.78) + 0.05, "YXZ");
+      b.rotation.set(-0.2, s * 0.28, s * (gob ? 0.32 : 0.17));
+      add(b, fin(rbox(2, isOrc ? 0.7 : 0.5, 0.6, 0.22, 1), K.brow));
+      return { b, s, p0: b.position.clone(), r0: b.rotation.clone() };
+    });
+    const mouth = bone(J.hg, 0, 3.3, sz(0, 3.3) + 0.02);
+    const mw = gob ? 2.6 : isOrc ? 2.4 : 1.75;
+    put(mouth, { m: [fin(rbox(mw, 0.22, 0.34, 0.1, 1), K.mouth), fin(xf2(ell(mw * 0.45, 0.22, 0.24, 6, 3), 0, -0.3, -0.06), K.lip)] });
+    if (gob) for (const s of [1, -1]) add(mouth, fin(xf2(new T2.ConeGeometry(0.22, 0.75, 4), s * 0.7, 0.05, 0.2), K.tooth));
+    if (isKn || isG) {
+      const hairSecs = headSecs.filter((s) => s.y >= 2.5).map((s) => ({ ...s, rx: s.rx + 0.32 + (s.y > 9 ? 0.15 : 0), rf: s.rf + 0.3, rb: s.rb + 0.38 }));
+      const capG = deform(tube(hairSecs, 20, { res: 2, cap0: null }), faceDeform);
+      const HLT = isKn ? [[0, 8.75], [0.88, 8.75], [1.15, 6.9], [1.3, 5.7], [1.4, 5.7], [1.64, 7.9], [1.85, 7.9], [2.12, 5.8], [2.42, 3.9], [P2, 3.4]] : [[0, 9.6], [1.4, 9.4], [1.9, 8.8], [2.4, 6.8], [P2, 5.6]];
+      const hl = (a) => {
+        for (let i = 0; i < HLT.length - 1; i++) if (a <= HLT[i + 1][0]) {
+          const [a0, y0] = HLT[i], [a1, y1] = HLT[i + 1];
+          return y0 + (y1 - y0) * (a - a0) / (a1 - a0);
+        }
+        return 3.4;
+      };
+      deform(capG, (v) => {
+        const a = Math.abs(Math.atan2(v.x, v.z + 0.3)), k = sstep(-0.15, 0.6, hl(a) - v.y);
+        if (k <= 0) return;
+        const r = Math.hypot(v.x, v.z + 0.3) || 1;
+        v.x -= v.x / r * 0.85 * k;
+        v.z -= (v.z + 0.3) / r * 0.85 * k;
+        v.y -= 0.15 * k;
+      });
+      HL.m.push(fin(capG, (x, y, z) => mix2(K.hair, K.hairHi, 0.55 * vnoise(x * 1.6, y * 0.7, z * 1.6) * sstep(6, 11, y))));
+      const capMesh = new T2.Mesh(capG, new T2.MeshBasicMaterial({ side: T2.DoubleSide })), HC = new T2.Vector3(0, 7.2, -0.4), NF = isKn ? 6 : 4;
+      for (let i = 0; i < (isKn ? 24 : 14); i++) {
+        const r1 = hash(i, 3, 7), r2 = hash(i, 11, 5), r3 = hash(i, 2, 19);
+        const az = i < NF ? (r1 - 0.5) * 1.6 : (r1 * 2 - 1) * P2, el2 = i < NF ? 0.28 + r2 * 0.32 : -0.15 + r2 * 1.4;
+        const dir = new T2.Vector3(Math.sin(az) * Math.cos(el2), Math.sin(el2), Math.cos(az) * Math.cos(el2)).normalize();
+        if (i >= NF && Math.cos(az) > 0.4 && el2 < 0.75) continue;
+        if (i >= NF && el2 < 0.1 && Math.abs(Math.sin(az)) > 0.6) continue;
+        rc.set(HC.clone().addScaledVector(dir, 12), dir.clone().negate());
+        const h = rc.intersectObject(capMesh)[0];
+        if (!h) continue;
+        const base = h.point.clone().addScaledVector(dir, -0.45);
+        const flow0 = i < NF ? new T2.Vector3(Math.sin(az) * 0.5, 0.9, 0.55) : new T2.Vector3(Math.sin(az) * 0.6, -0.35, -1);
+        const f = flow0.clone().addScaledVector(dir, -flow0.dot(dir)).normalize();
+        const ax = dir.clone().multiplyScalar(i < NF ? 0.8 : 0.32).add(f).normalize(), sd = new T2.Vector3().crossVectors(ax, f).normalize(), curl = new T2.Vector3().crossVectors(sd, ax).normalize();
+        const len2 = (i < NF ? 2.6 : 3) + r3 * 1.6, rad = (isG ? 0.8 : 1.2) + r2 * 0.5;
+        const g = new T2.ConeGeometry(rad, len2, 5, 2);
+        g.translate(0, len2 / 2, 0);
+        deform(g, (v) => {
+          const t = v.y / len2;
+          v.x *= 1.35;
+          v.z *= 0.6;
+          v.z += 1.1 * t * t;
+        });
+        g.applyMatrix4(new T2.Matrix4().makeBasis(sd, ax, curl).setPosition(base));
+        HL.m.push(fin(g, (x, y, z) => mix2(K.hair, K.hairHi, 0.25 + 0.45 * vnoise(x * 2, y * 2, z * 2))));
+      }
+      const bc = isKn ? K.red : K.band, bcd = isKn ? K.redDk : K.bandDk;
+      const bandG = tube([{ y: 7.95, z: 0.02, rx: 4.5, rf: 4.42, rb: 5.15, p: 2.2 }, { y: 8.12, z: 0.02, rx: 4.68, rf: 4.6, rb: 5.33, p: 2.2 }, { y: 9.18, z: -0.12, rx: 4.6, rf: 4.35, rb: 5.28, p: 2.15 }, { y: 9.35, z: -0.12, rx: 4.42, rf: 4.18, rb: 5.1, p: 2.15 }].map((s) => gob ? { ...s, rx: s.rx * 1.08, rb: s.rb * 1.14 } : s), 22, { cap0: null, cap1: null });
+      xf2(bandG, 0, -8.6, 0);
+      xf2(bandG, 0, 8.6, 0, -0.09, 0, 0);
+      HL.m.push(fin(deform(bandG, faceDeform), (x, y, z, nx, ny) => occl(mix2(bc, bcd, 0.3 * vnoise(x * 2, y * 4, z * 2)), ny, 0.2)));
+      const bz = gob ? -6.2 : -5.45;
+      HL.m.push(fin(xf2(ell(0.8, 0.62, 0.55, 5, 4), 0.7, 7.85, bz), bcd));
+      for (const s of [-1, 1]) {
+        const chain = [];
+        let p = bone(J.hg, s * 0.5 + 0.7, 7.75, bz - 0.1, "YXZ");
+        p.rotation.set(0.62, s * 0.35, s * 0.28);
+        for (let i = 0; i < 3; i++) {
+          add(p, fin(xf2(new T2.BoxGeometry(1.15 - i * 0.2, 3.3, 0.2), 0, -1.65, 0), i % 2 ? bcd : bc, false), "c", true);
+          chain.push(p);
+          if (i < 2) {
+            p = bone(p, 0, -3.3, 0, "YXZ");
+            p.rotation.set(0.2, 0, s * 0.12);
+          }
+        }
+        tails.push(chain);
+      }
+    }
+    if (isHob) {
+      const capSecs = headSecs.filter((s) => s.y >= 4.5).map((s) => ({ ...s, rx: s.rx + 0.45, rf: s.rf + 0.42, rb: s.rb + 0.5 }));
+      const cap = deform(tube(capSecs, 20, { res: 2, cap0: null }), faceDeform);
+      deform(cap, (v) => {
+        const a = Math.abs(Math.atan2(v.x, v.z + 0.3)), lim = a < 1 ? 8.1 : a < 1.9 ? 7.4 : 5.2, k = sstep(-0.1, 0.5, lim - v.y);
+        if (k <= 0) return;
+        const r = Math.hypot(v.x, v.z + 0.3) || 1;
+        v.x -= v.x / r * 0.9 * k;
+        v.z -= (v.z + 0.3) / r * 0.9 * k;
+      });
+      HL.m.push(fin(cap, (x, y, z, nx, ny) => occl(mix2(K.helm, K.helmDk, 0.35 * vnoise(x * 1.2, y * 1.2, z * 1.2) + 0.4 * sstep(8.6, 8.1, y) * sstep(0, 2, z)), ny, 0.15)));
+      HL.m.push(fin(xf2(rbox(1.3, 3, 0.8, 0.3, 1), 0, 7, sz(0, 7) + 0.75), K.helmDk));
+      for (const s of [1, -1]) HL.m.push(fin(xf2(rbox(2, 3.4, 0.8, 0.3, 1), s * 3.25, 4.9, sz(s * 3.25, 4.9) + 0.25, 0, s * 0.5, 0), K.helm));
+      for (const x of [-2.6, -1.3, 1.3, 2.6]) HL.m.push(fin(xf2(new T2.BoxGeometry(0.3, 0.3, 0.3), x, 8.3, sz(x, 8.3) + 0.45), K.stitch, false));
+      HL.m.push(fin(xf2(new T2.ConeGeometry(0.9, 1.8, 5), 0, 13.3, -0.6), K.helmDk));
+    }
+    put(J.hg, HL);
+    const upSecs = (s) => [{ y: 1.3, x: s * 0.1, rx: 2.55, rf: 2.65, rb: 2.65, d: 1.6 }, { y: -1.6, x: s * 0.05, rx: 2.65, rf: 2.95, rb: 2.65 }, { y: -4.6, rx: 2.45, rf: 2.75, rb: 2.55 }, { y: -7.2, rx: 2.05, rf: 2.15, rb: 2.25 }, { y: -9.3, rx: 1.75, rf: 1.8, rb: 1.9 }, { y: -10.1, rx: 1.45, rf: 1.5, rb: 1.55, d: 0.8 }].map((o) => ({ ...o, rx: o.rx * LW, rf: o.rf * LW, rb: o.rb * LW }));
+    const foreSecs = [{ y: 1.4, rx: 1.55, rf: 1.6, rb: 1.65, d: 1 }, { y: 0, rx: 2, rf: 2.05, rb: 2.1 }, { y: -2.2, rx: 2.25, rf: 2.2, rb: 2.25 }, { y: -5, rx: 1.9, rf: 1.75, rb: 1.75 }, { y: -7.8, rx: 1.42, rf: 1.28, rb: 1.32 }, { y: -8.9, rx: 1.3, rf: 1.2, rb: 1.2, d: 0.6 }].map((o) => ({ ...o, rx: o.rx * LW, rf: o.rf * LW, rb: o.rb * LW }));
+    const quilt = (per) => (x, y, z, nx, ny) => {
+      const f = (y / per % 1 + 1) % 1;
+      return occl(f < 0.12 || f > 0.92 ? K.linenDk : mix2(K.linen, K.linenDk, 0.15 * vnoise(x * 2, y * 2, z * 2)), ny, 0.15);
+    };
+    const bracer = (c, band2) => (x, y, z, nx, ny) => {
+      const a = Math.atan2(x, z), lace = Math.abs(a) < 0.35 && (y * 1.4 % 1 + 1) % 1 < 0.35;
+      return occl(band2 && (Math.abs(y + 3.2) < 0.45 || Math.abs(y + 6.4) < 0.45) ? K.oiron : lace ? K.leaHi : mix2(c, shd(c, 0.65), 0.35 * vnoise(x * 2, y * 2, z * 2)), ny, 0.15);
+    };
+    for (const [s, A2] of [[1, J.armL], [-1, J.armR]]) {
+      const U = upSecs(s);
+      add(A2.sh, fin(xf2(ell(2.95 * LW, 3 * LW, 3.1 * LW, 9, 6), s * 0.35, -0.5, 0, 0, 0, s * 0.25), skinCol));
+      add(A2.sh, fin(tube(U, 9, { res: 1 }), (x, y, z, nx, ny, nz) => occl(mix2(skin, K.skinDk, 0.2 * gauss(z + 0.6, 0.7) * sstep(-7, -2, y) * sstep(0, 0.6, x * s)), ny, 0.15)));
+      if (isKn && s < 0) {
+        add(A2.sh, fin(sleeve(U, -8.6, 0.6, 0.5, 4, 10), quilt(1.45)));
+        add(A2.sh, fin(xf2(new T2.SphereGeometry(1, 10, 4, 0, P2 * 2, 0, P2 * 0.5), s * 0.4, 0.45, 0, 0, 0, s * 0.22, 3.4, 2.75, 3.5), (x, y, z) => mix2(K.lea, K.leaDk, 0.3 * vnoise(x * 2, y * 2, z * 2))), "c");
+        for (let k = 0; k < 3; k++) {
+          const y0 = 0.9 - k * 1.35, r0 = 3.5 + k * 0.12, fl = 0.55;
+          const lame = [{ y: y0 - 1.55, x: s * (0.65 + k * 0.1), rx: r0 + fl, rf: r0 + fl - 0.15, rb: r0 + fl - 0.1 }, { y: y0, x: s * (0.55 + k * 0.1), rx: r0, rf: r0 - 0.2, rb: r0 - 0.15 }];
+          add(A2.sh, fin(shell(lame, s * P2 / 2 - 2, s * P2 / 2 + 2, 8, 0.24), (x, y, z, nx, ny) => mix2(k % 2 ? K.leaHi : K.lea, K.leaDk, 0.25 + 0.2 * sstep(0, -1, ny))), "k");
+        }
+      } else if (isKn) add(A2.sh, fin(bevelRing(U, -2.6, -1.7, 0.2, 0.12, 10), (x, y, z, nx, ny) => mix2(K.bronze, K.bronzeHi, 0.5 * sstep(0, 1, ny + 0.5))), "k");
+      else if (isG && s < 0) add(A2.sh, fin(bevelRing(U, -3, -2.2, 0.18, 0.1, 8), K.rope));
+      else if (isHob && s > 0) add(A2.sh, fin(xf2(new T2.SphereGeometry(1, 10, 4, 0, P2 * 2, 0, P2 * 0.5), s * 0.4, 0.45, 0, 0, 0, s * 0.22, 3.5 * LW, 2.8, 3.6 * LW), (x, y, z) => mix2(C3("#3A2A22"), C3("#2C1F19"), 0.4 * vnoise(x * 2, y * 2, z * 2))), "c");
+      add(A2.el, fin(tube(foreSecs, 9, { res: 1 }), (x, y, z, nx, ny) => occl(skin, ny, 0.12)));
+      if (isKn && s < 0) {
+        add(A2.el, fin(sleeve(foreSecs, -6.4, 0.2, 0.45, 3, 10), quilt(1.3)));
+        add(A2.el, fin(bevelRing(foreSecs, -8.3, -6.2, 0.55, 0.18, 10), (x, y) => Math.abs(y + 7.25) < 0.15 ? K.leaHi : K.lea));
+      } else if (isKn || isHob) add(A2.el, fin(sleeve(foreSecs, -8.2, -2, 0.34, 3, 10), bracer(isHob ? C3("#2C1F19") : K.lea, false)));
+      else if (isOrc) add(A2.el, fin(sleeve(foreSecs, -7.8, -1.4, 0.34, 3, 10), bracer(K.olea, true)));
+      else if (isG && s > 0) add(A2.el, fin(sleeve(foreSecs, -7.6, -2.6, 0.24, 3, 9), (x, y, z) => {
+        const f = ((y * 0.62 + Math.atan2(x, z) / (P2 * 2) * 1.4) % 1 + 1) % 1;
+        return f < 0.14 ? shd(K.linenDk, 0.6) : shd(K.linenDk, 0.9);
+      }));
+      add(A2.hd, fin(xf2(rbox(2.55 * LW, 3 * LW, 3.25 * LW, 0.9, 1), 0, -1.45, 0.3), (x, y, z, nx, ny) => occl(skin, ny, 0.15)));
+      add(A2.hd, fin(xf2(ell(0.62 * LW, 0.55 * LW, 1.25 * LW, 5, 3), -s * 1 * LW, -1, 1.3, 0.3, 0, 0), skin));
+    }
+    const weapon = new T2.Group();
+    weapon.position.set(0, -1.4, 0.4);
+    J.armR.hd.add(weapon);
+    let shield = null, drinkBottle = null;
+    const alongZ = (g) => xf2(g, 0, 0, 0, P2 / 2, 0, 0);
+    if (isKn) {
+      solid(weapon, {
+        k: [fin(xf2(ell(1.05, 1.05, 0.9, 7, 5), 0, 0, -3.3), (x, y, z, nx, ny) => mix2(K.bronze, K.bronzeHi, 0.55 * sstep(0, 1, ny))), fin(alongZ(tube([{ y: 3.15, rx: 0.62, rf: 1.75, rb: 1.75 }, { y: 3.55, rx: 0.62, rf: 1.75, rb: 1.75 }], 8, { cap0: "flat", cap1: "flat" })), K.bronzeDk)],
+        m: [
+          fin(alongZ(tube([{ y: -2.7, rx: 0.68, rf: 0.68, rb: 0.68 }, { y: -1.6, rx: 0.78, rf: 0.78, rb: 0.78 }, { y: -0.9, rx: 0.68, rf: 0.68, rb: 0.68 }, { y: 0.1, rx: 0.8, rf: 0.8, rb: 0.8 }, { y: 0.9, rx: 0.7, rf: 0.7, rb: 0.7 }, { y: 2, rx: 0.74, rf: 0.74, rb: 0.74 }], 6, { cap0: "flat", cap1: "flat" })), (x, y, z) => {
+            const a = Math.atan2(y, x) / (P2 * 2);
+            return ((z * 1.7 + a) % 1 + 1) % 1 < 0.2 ? K.leaDk : K.lea;
+          }),
+          fin(alongZ(tube([{ y: 2.05, rx: 0.95, rf: 2.3, rb: 2.3 }, { y: 2.3, rx: 1.15, rf: 2.55, rb: 2.55 }, { y: 2.95, rx: 1.15, rf: 2.55, rb: 2.55 }, { y: 3.2, rx: 0.95, rf: 2.3, rb: 2.3 }], 10, { cap0: "flat", cap1: "flat" })), (x, y, z, nx, ny) => occl(mix2(K.woodDk, K.wood, 0.25), ny, 0.25)),
+          fin(alongZ(tube([{ y: 3.4, rx: 0.38, rf: 1.42, rb: 1.42, p: 1.25 }, { y: 7, rx: 0.4, rf: 1.55, rb: 1.55, p: 1.25 }, { y: 16.5, rx: 0.38, rf: 1.48, rb: 1.48, p: 1.25 }, { y: 21, rx: 0.36, rf: 1.4, rb: 1.4, p: 1.25 }, { y: 24.4, rx: 0.3, rf: 0.8, rb: 0.8, p: 1.3 }, { y: 26.3, rx: 0.14, rf: 0.12, rb: 0.12, p: 1.5, d: 0.12 }], 8, { res: 1, cap0: "flat" })), (x, y, z, nx) => {
+            const g = Math.sin(y * 7.5 + z * 0.22 + 2.5 * vnoise(z * 0.35, y * 1.5, 3)), worn = sstep(1.05, 1.45, Math.abs(y)), knot = gauss(Math.hypot(z - 13.5, (y - 0.4) * 2), 0.6);
+            return mix2(mix2(mix2(K.woodLt, K.wood, 0.35 + 0.3 * sstep(0.5, 1, g)), K.woodDk, 0.45 * worn + 0.7 * knot), K.woodLt, 0.25 * sstep(0.6, 0.95, Math.abs(nx)) * (1 - worn));
+          })
+        ]
+      });
+      shield = new T2.Group();
+      shield.position.set(2.6, -4.6, 0.2);
+      J.armL.el.add(shield);
+      const R = 22, h0 = R * Math.cos(Math.asin(9.3 / R)), dome = (r) => 0.45 + Math.sqrt(R * R - r * r) - h0;
+      const band2 = (r0, r1, n, col) => {
+        const pts = [];
+        for (let i = 0; i <= n; i++) {
+          const r = r0 + (r1 - r0) * i / n;
+          pts.push(new T2.Vector2(r, dome(r)));
+        }
+        return fin(xf2(new T2.LatheGeometry(pts.reverse(), 24), 0, 0, 0, 0, 0, -P2 / 2), col);
+      };
+      const wd = (x, y, z) => mix2(K.wood, K.woodDk, 0.45 * sstep(0.3, 1, Math.sin(y * 1.1 + 3 * vnoise(z * 0.5, y * 0.2, 3))) + 0.2 * (Math.floor((z + 9.3) / 3.1) % 2));
+      const SH = {
+        m: [
+          band2(0.01, 6.7, 3, wd),
+          band2(6.7, 7.1, 1, mix2(K.wood, K.trim, 0.6)),
+          band2(7.1, 8.25, 1, (x, y, z) => mix2(K.red, K.redDk, 0.3 * vnoise(y * 0.7, z * 0.7, 1))),
+          band2(8.25, 9.3, 1, wd),
+          fin(xf2(new T2.CylinderGeometry(9.3, 9.3, 0.7, 24, 1), 0.1, 0, 0, 0, 0, -P2 / 2), (x, y, z, nx) => nx < -0.5 ? K.woodDk : K.wood, false),
+          fin(xf2(new T2.BoxGeometry(0.5, 8.5, 2), -0.45, 0, 0), K.leaDk, false),
+          fin(xf2(new T2.BoxGeometry(0.5, 2.2, 7.5), -0.45, 1.5, 0), K.lea, false)
+        ],
+        k: [
+          fin(xf2(new T2.TorusGeometry(9.35, 0.5, 4, 24), 0.45, 0, 0, 0, P2 / 2, 0), (x, y, z, nx, ny) => mix2(K.iron, K.ironDk, 0.4 * vnoise(y * 0.8, z * 0.8, 2) + 0.2 * sstep(0, -1, ny))),
+          fin(xf2(new T2.CylinderGeometry(3.5, 3.6, 0.35, 12, 1), 2.6, 0, 0, 0, 0, -P2 / 2), K.bronzeDk),
+          fin(xf2(new T2.SphereGeometry(2.7, 12, 4, 0, P2 * 2, 0, P2 / 2), 2.7, 0, 0, 0, 0, -P2 / 2, 1, 0.68, 1), (x, y, z, nx, ny) => mix2(K.bronze, K.bronzeHi, 0.6 * sstep(0.2, 1, ny * 0.6 + nx * 0.5)))
+        ]
+      };
+      for (let i = 0; i < 8; i++) {
+        const a = i / 8 * P2 * 2, r = 8.7;
+        SH.k.push(fin(xf2(new T2.OctahedronGeometry(0.36), dome(r) + 0.15, Math.sin(a) * r, Math.cos(a) * r), K.bronzeHi, false));
+      }
+      solid(shield, SH);
+    } else if (isG) {
+      solid(weapon, {
+        m: [fin(alongZ(tube([{ y: -2.5, rx: 0.7, rf: 0.7, rb: 0.7 }, { y: 3.5, rx: 0.85, rf: 0.85, rb: 0.85 }], 6, { cap0: "flat", cap1: "flat" })), K.leaDk), fin(alongZ(tube([{ y: 3.2, rx: 1.1, rf: 1.1, rb: 1.1 }, { y: 9, rx: 1.9, rf: 1.9, rb: 1.9 }, { y: 16, rx: 2.4, rf: 2.4, rb: 2.4, d: 1.4 }], 7, { res: 1, cap0: "flat" })), (x, y, z) => mix2(K.wood, K.woodDk, 0.5 * sstep(0.4, 1, Math.sin(Math.atan2(y, x) * 5 + z * 0.4))))],
+        k: [[1.9, 1.2, 13], [-1.8, 1, 15], [0.4, -2.2, 14], [1.2, -1.6, 9.5], [-1.4, 1.9, 10.5]].map(([x, y, z]) => fin(xf2(new T2.OctahedronGeometry(0.7), x, y, z), K.iron, false))
+      });
+    } else if (isHob) {
+      const blade = (pts, d) => {
+        const g = new T2.Shape(pts.map(([a, b]) => new T2.Vector2(a, b)));
+        return new T2.ExtrudeGeometry(g, { depth: d, bevelEnabled: false });
+      };
+      solid(weapon, {
+        m: [fin(alongZ(tube([{ y: -12, rx: 0.72, rf: 0.72, rb: 0.72 }, { y: 31, rx: 0.72, rf: 0.72, rb: 0.72 }], 6, { cap0: "flat", cap1: "flat" })), (x, y, z) => (z * 0.6 % 1 + 1) % 1 < 0.1 ? C3("#3A2818") : C3("#4A3424"))],
+        k: [
+          fin(alongZ(tube([{ y: -12.5, rx: 0.95, rf: 0.95, rb: 0.95 }, { y: -10.8, rx: 0.95, rf: 0.95, rb: 0.95 }], 6, { cap0: "flat", cap1: "flat" })), C3("#6F777C")),
+          fin(xf2(new T2.BoxGeometry(1.8, 2.8, 5), 0, 0, 25), C3("#2F2A24"), false),
+          fin(xf2(blade([[0, -1], [-8.5, -3.6], [-10.2, 2], [-9.4, 7.6], [0, 4.6]], 0.7), -0.35, 0, 0, 0, P2 / 2, 0), (x, y, z) => y < -7.6 ? C3("#D4DADD") : C3("#8E979C"), false),
+          fin(xf2(new T2.ConeGeometry(1.3, 5.5, 4), 0, 3.6, 25.5), C3("#6F777C"), false),
+          fin(xf2(new T2.ConeGeometry(1.5, 8, 4), 0, 0, 34.5, P2 / 2, 0, 0), C3("#C3CACD"), false)
+        ]
+      });
+    } else {
+      solid(weapon, { m: [fin(xf2(new T2.BoxGeometry(1.3, 1.3, 4), 0, 0, 0.5), C3("#3A2A1C"), false)], k: [fin(xf2(new T2.BoxGeometry(3.2, 0.8, 0.9), 0, 0, 2.8), C3("#6F777C"), false), fin(alongZ(tube([{ y: 3.2, rx: 0.25, rf: 0.85, rb: 0.85, p: 1.3 }, { y: 9, rx: 0.2, rf: 0.7, rb: 0.7, p: 1.3 }, { y: 11.6, rx: 0.08, rf: 0.08, rb: 0.08, d: 0.1 }], 6, { cap0: "flat" })), C3("#C3CACD"))] });
+      drinkBottle = new T2.Group();
+      drinkBottle.position.set(0, -2.6, 1.2);
+      drinkBottle.rotation.x = P2;
+      drinkBottle.visible = false;
+      J.armL.hd.add(drinkBottle);
+      solid(drinkBottle, { m: [fin(xf2(new T2.CylinderGeometry(0.95, 1.05, 2.4, 6), 0, 0, 0), K.glass), fin(xf2(new T2.CylinderGeometry(0.4, 0.5, 1, 5), 0, 1.6, 0), K.glass), fin(xf2(new T2.CylinderGeometry(0.45, 0.45, 0.5, 5), 0, 2.3, 0), K.cork)] });
+    }
+    const sk = skinPieces(J, pieces, mats);
+    return { flaps, tails, eyes, mouth, brows, irises, weapon, shield, potions, drinkBottle, tris: sk.tris + rigidTris, meshes: sk.meshes };
+  }
 
   // src/render/rigs/ik.js
   var _iv = new T3.Vector3();
@@ -7561,14 +8497,14 @@ h3 {
       return;
     }
     const lift = (l, settle) => {
-      const T = settle ? o.swingMax * 0.8 : swingT, lead = settle ? 0 : S3 * 0.5 * Math.min(1, sp / spE);
-      const hm = homeAt(l, x + vx * T, y + vy * T, yaw + clampv(yr * T, -0.7, 0.7), sc);
+      const T4 = settle ? o.swingMax * 0.8 : swingT, lead = settle ? 0 : S3 * 0.5 * Math.min(1, sp / spE);
+      const hm = homeAt(l, x + vx * T4, y + vy * T4, yaw + clampv(yr * T4, -0.7, 0.7), sc);
       l.ax = l.fx;
       l.az = l.fz;
       l.bx = hm[0] + ux * lead;
       l.bz = hm[1] + uz * lead;
       l.u = 0;
-      l.sw = T;
+      l.sw = T4;
       F.steps = (F.steps || 0) + 1;
     };
     const dist = (l) => Math.hypot(l.px - l.hx, l.pz - l.hz);
@@ -7654,451 +8590,30 @@ h3 {
   // src/render/rigs/hero.js
   function makeHeroRig(kind) {
     const isK = kind !== "archer", isKn = kind === "knight", isHob = kind === "hob", isOrc = kind === "orc", isG = kind === "goblin" || isHob || isOrc, FK = isG ? "boar" : isK ? "hero" : "hero2";
-    const mat2 = charMat(), HS = isHob ? 0.8 : isOrc ? 0.76 : isG ? 0.6 : 0.71, LEG = 10.5, FOOT = 2.6;
-    let skin = c3("k-h-skin"), skinDk = c3("k-h-skin-dk"), hair = c3("k-h-hair"), rag1 = c3("k-h-rag-1"), rag2 = c3("k-h-rag-2"), ragDk = c3("k-h-rag-dk");
-    let pat1 = c3("k-h-patch-1"), pat2 = c3("k-h-patch-2"), band2 = c3("k-h-band"), capeC = c3("k-h-cape"), rope = c3("k-h-rope"), leather = c3("k-h-leather"), wrap = c3("k-h-wrap");
-    let bronze = c3("k-h-bronze"), blade = c3("k-h-blade"), bladeDk = c3("k-h-blade-dk"), rust = c3("k-h-rust"), wood = c3("k-h-wood"), wood2 = c3("k-h-wood-2"), iron = c3("k-iron"), ironHi = c3("k-iron-hi");
-    const dark = lin("#1c1410"), white = lin("#f4efe6");
-    if (isG) {
-      skin = lin("#7fa046");
-      skinDk = lin("#5f7d33");
-      hair = lin("#2b3320");
-      rag1 = lin("#6b4a2c");
-      rag2 = lin("#57391f");
-      ragDk = lin("#3b2a1a");
-      pat1 = lin("#7a5a34");
-      pat2 = lin("#4d3a22");
-      band2 = lin("#2f2a24");
-      bronze = lin("#5a4630");
-      capeC = lin("#3b2a1a");
-    }
-    if (isOrc) {
-      skin = lin("#7c8656");
-      skinDk = lin("#5f6a3f");
-      hair = lin("#1d1712");
-      rag1 = lin("#5a3e2a");
-      rag2 = lin("#47301f");
-      ragDk = lin("#2c1f15");
-      pat1 = lin("#6d4a30");
-      pat2 = lin("#4c3322");
-      band2 = lin("#8a2f2a");
-    }
-    if (isHob) {
-      skin = lin("#4f7a2e");
-      skinDk = lin("#3a5c21");
-      hair = lin("#241612");
-      rag1 = lin("#3a2a22");
-      rag2 = lin("#2c1f19");
-      ragDk = lin("#1c1410");
-      pat1 = lin("#5a3f2c");
-      pat2 = lin("#3e2b1f");
-      band2 = lin("#6a5a48");
-    }
-    if (!isK) {
-      rag1 = lin("#5d7a3e");
-      rag2 = lin("#4b6633");
-      ragDk = lin("#33452a");
-      pat1 = lin("#8a7448");
-      pat2 = lin("#6f5a3a");
-      capeC = lin("#3d5a34");
-      band2 = lin("#6a4b2c");
-      bronze = lin("#6e4e2e");
-      hair = lin("#5a3a22");
-      skin = lin("#d9a57c");
-      skinDk = lin("#c08a62");
-    }
+    const HS = isHob ? 0.8 : isOrc ? 0.76 : isG ? 0.6 : 0.71, LEG2 = 10.5, FOOT = 2.6;
     const root3 = grp(scene), rig = grp(root3);
     rig.scale.setScalar(HS);
-    const hips = grp(rig, 0, 25, 0, "YXZ");
-    const add = (parent, list) => {
-      const m = part(list, mat2);
-      parent.add(m);
-      return m;
-    };
-    const wrapWear = shade(wrap, -0.1);
-    const oPants = lin("#3e3a33"), oPantsDk = lin("#2b2823"), oBoot = lin("#4a3324"), oFur = lin("#7a6248"), oFurDk = lin("#584633"), oLea = lin("#5a3b26"), oIron = lin("#6f777c"), oPaint = lin("#8a2f2a");
-    add(hips, isOrc ? [
-      paint(vloft([{ y: -3.2, rx: 5.4, rz: 3.9 }, { y: 0.5, rx: 6, rz: 4.3 }, { y: 3.2, rx: 5.6, rz: 4 }], 8), oPantsDk),
-      paint(xf(gCyl(6.4, 6.4, 2.6, 10), 0, 2.4, 0), oLea, 0.06),
-      paint(xf(gBox(3.2, 2.8, 1), 0, 2.4, 6), oIron, 0.04),
-      paint(xf(gBox(1.6, 1.4, 1.2), 0, 2.4, 6.4), shade(oIron, 0.12), 0),
-      ...[2.2, -2.2, 4.6, -4.6].map((x) => paint(xf(gOct(0.45), x, 2.4, Math.sqrt(Math.max(0, 41 - x * x)) + 0.1), oIron, 0))
-    ] : [
-      paint(vloft([{ y: -3.2, rx: 5, rz: 3.5 }, { y: 0.5, rx: 5.7, rz: 4 }, { y: 3.2, rx: 5.2, rz: 3.7 }], 8), ragDk),
-      paint(xf(gCyl(5.9, 5.9, 1.3, 9), 0, 2.4, 0), rope, 0.07),
-      paint(xf(gCyl(6.1, 6.1, 0.5, 9), 0, 2.4, 0), shade(rope, -0.12), 0.05),
-      paint(xf(gOct(1.5), 3.6, 2.2, 4.4, 0, 0, 0, 1, 0.9, 0.8), rope, 0.05),
-      paint(xf(gBox(0.8, 5, 0.8), 3.2, -0.6, 4.9, 0.12, 0, 0.1), rope, 0.05),
-      paint(xf(gBox(0.8, 3.6, 0.8), 4.4, 0, 4.6, 0.1, 0, -0.14), shade(rope, -0.08), 0.05),
-      paint(xf(gBox(3, 3.4, 2), -5.6, 0.2, 1, 0, 0, 0.1), leather, 0.06),
-      paint(xf(gBox(3.2, 1.2, 2.2), -5.6, 1.6, 1, 0, 0, 0.1), shade(leather, -0.08), 0.04)
-    ]);
-    const skirt = [];
-    if (isOrc) for (const [ang, w, ln] of [[0, 6.4, 9.5], [P2, 6.4, 9.5], [P2 / 2, 4.6, 7.8], [-P2 / 2, 4.6, 7.8]]) {
-      const g = grp(hips, Math.sin(ang) * 5.7, 1.4, Math.cos(ang) * 4.4);
-      g.rotation.order = "YXZ";
-      g.rotation.y = ang;
-      add(g, [paint(slab([[-w / 2, 0], [w / 2, 0], [w * 0.46, -ln], [-w * 0.46, -ln]], 0.8), (x, y) => y < -ln + 1.4 ? shade(oLea, -0.08) : oLea, 0.05), ...[-w * 0.3, w * 0.3].map((x) => paint(xf(gOct(0.4), x, -1.2, 0.5), oIron, 0))]);
-      skirt.push({ g, ang, len: ln });
-    }
-    for (let i = 0; i < (isOrc ? 0 : 9); i++) {
-      const ang = i / 9 * P2 * 2 + 0.2, len2 = 7.5 + hash3(i, 1, 2) * 4.5, w = 4.6;
-      const g = grp(hips, Math.sin(ang) * 5.5, 2, Math.cos(ang) * 3.9);
-      g.rotation.order = "YXZ";
-      g.rotation.y = ang;
-      const tone2 = [rag1, rag2, rag1, pat2, rag2, rag1, ragDk, rag1, pat1][i];
-      const pts = [[-w / 2, 0], [w / 2, 0], [w * 0.46, -len2 * 0.72], [w * 0.2, -len2], [0, -len2 * 0.7], [-w * 0.28, -len2 * 0.95], [-w * 0.47, -len2 * 0.6]];
-      add(g, [paint(slab(pts, 0.5), (x, y) => y < -len2 * 0.62 ? shade(tone2, -0.07) : tone2, 0.05)]);
-      skirt.push({ g, ang, len: len2 });
-    }
-    function leg(side) {
-      const th = grp(hips, side * 3.9, -1.5, 0);
-      add(th, [
-        paint(vloft([{ y: -LEG, rx: 2.2, rz: 2.3 }, { y: -5, rx: 2.9, rz: 3 }, { y: 0.6, rx: 3.1, rz: 3.2 }], 7), isOrc ? oPants : skin),
-        paint(xf(gCyl(2.55, 2.45, 2.2, 7), 0, -9.6, 0), isOrc ? oPantsDk : wrap, 0.06)
-      ]);
-      const kn = grp(th, 0, -LEG, 0);
-      add(kn, [
-        paint(vloft([{ y: -LEG, rx: 1.6, rz: 1.7 }, { y: -6.2, rx: 2.4, rz: 2.7, z: -0.4 }, { y: 0, rx: 2.3, rz: 2.3 }], 7), (x, y) => isOrc ? y > -6.2 ? oPants : oBoot : y > -1.6 ? skin : bands(y, -11, 1.5, wrap, wrapWear), 0.04),
-        paint(xf(gBox(0.7, 3.2, 0.7), side * 2.2, -3.4, -1.2, 0.3, 0, side * 0.2), wrap, 0.05)
-      ]);
-      if (isOrc) add(kn, [paint(xf(gCyl(3, 2.8, 1.8, 8), 0, -6, -0.3), (x, y) => y > -6 ? oFur : oFurDk, 0.1)]);
-      const ft = grp(kn, 0, -LEG, 0);
-      add(ft, [
-        paint(loft([{ z: -2.3, y: -1.1, rx: 1.7, ry: 1.3 }, { z: 1.6, y: -1.3, rx: 2.1, ry: 1.2 }, { z: 4.8, y: -1.8, rx: 1.7, ry: 0.7 }], 6, 0.5), (x, y, z) => isOrc ? oBoot : z > 2.6 ? skin : wrap, 0.05),
-        paint(xf(gBox(4, 0.6, 7.6), 0, -2.3, 1.2), leather, 0.05)
-      ]);
-      return { th, kn, ft };
-    }
-    const legL = leg(1), legR = leg(-1);
+    const J = makeSkeleton(rig), mats = makeMats(), model = buildHuman(kind, J, mats);
+    const { hips, waist, spine, chest, neck, head, armL, armR, legL, legR } = J, { eyes, mouth, shield, weapon, potions, drinkBottle } = model;
     const feet = makeFeet(
       [
-        { th: legL.th, kn: legL.kn, ft: legL.ft, parent: hips, hip: [3.9, -1.5, 0], L1: LEG, L2: LEG, home: [3.9, 1.8], lt: 0, ankle: 2.6, bend: 1, grp: 0 },
-        { th: legR.th, kn: legR.kn, ft: legR.ft, parent: hips, hip: [-3.9, -1.5, 0], L1: LEG, L2: LEG, home: [-3.9, -1.8], lt: 0.5, ankle: 2.6, bend: 1, grp: 0 }
+        { th: legL.th, kn: legL.kn, ft: legL.ft, parent: hips, hip: [3.9, -1.5, 0], L1: LEG2, L2: LEG2, home: [3.9, 1.8], lt: 0, ankle: 2.6, bend: 1, grp: 0 },
+        { th: legR.th, kn: legR.kn, ft: legR.ft, parent: hips, hip: [-3.9, -1.5, 0], L1: LEG2, L2: LEG2, home: [-3.9, -1.8], lt: 0.5, ankle: 2.6, bend: 1, grp: 0 }
       ],
       { duty: 0.6, maxUp: 1, lift: isG ? 3.8 : 4.2, step0: 12, stepK: 0.26, stepMax: isG ? 22 : 24.5, swingMin: isG ? 0.16 : 0.14, swingMax: 0.42, settle: 2.6, reachH: isG ? 13.5 : 15 }
     );
-    const waist = grp(hips, 0, 2.6, 0), spine = grp(waist, 0, 0, 0, "YXZ");
-    add(spine, [
-      paint(
-        vloft([{ y: 0, rx: 5, rz: 3.5 }, { y: 4, rx: 5.4, rz: 3.9 }, { y: 9, rx: 6.9, rz: 4.5, rf: 4.9 }, { y: 12.6, rx: 7.3, rz: 4.3, rf: 4.5 }, { y: 14.3, rx: 4.6, rz: 3.2 }, { y: 15.6, rx: 2.5, rz: 2.4 }], 8),
-        (x, y) => y > 14.4 ? skin : isOrc ? y < 2.2 ? oLea : skin : y > 11.2 + x * 0.6 ? skin : y > 10.4 + x * 0.6 ? ragDk : bands(x + y * 0.3, -20, 5.5, rag1, shade(rag1, -0.035)),
-        0.045
-      ),
-      // 기운 자국 (오크는 없음)
-      ...isOrc ? [] : [
-        paint(xf(gBox(3.6, 3.4, 0.5), 2.6, 5.2, 4.25, 0, 0.15, 0.2), pat1, 0.05),
-        paint(xf(gBox(0.5, 0.5, 0.7), 1, 6.6, 4.3), dark, 0),
-        paint(xf(gBox(0.5, 0.5, 0.7), 4.3, 3.9, 4.2), dark, 0),
-        paint(xf(gBox(4.4, 3.8, 0.5), -1.6, 6, -4.5, 0, 0, -0.25), pat2, 0.05),
-        paint(xf(gBox(2.4, 2.2, 0.5), 3.4, 2.6, -4, 0, 0, 0.3), shade(rag2, -0.05), 0.05)
-      ],
-      // 어깨에서 허리로 가로지르는 가죽끈
-      paint(xf(gBox(1.3, 17, 0.6), -0.6, 8, 4.75, 0, 0, -0.74), leather, 0.05),
-      paint(xf(gBox(1.3, 17, 0.6), -0.6, 8, -4.55, 0, 0, 0.74), leather, 0.05),
-      paint(xf(gBox(1.8, 1.8, 0.8), -3.4, 11.2, 4.9, 0, 0, 0.78), isOrc ? oIron : bronze, 0.04)
-    ]);
-    if (isOrc) add(spine, [
-      // 오크: 가슴 근육 · 배 · 어깨 털 망토
-      ...[1, -1].map((sd) => paint(xf(gBox(5.2, 3.2, 1.2), sd * 2.9, 10.2, 4, -0.15, sd * 0.12, 0), skinDk, 0.03)),
-      paint(xf(gBox(5.4, 4.4, 1), 0, 5.4, 3.8), skinDk, 0.03),
-      paint(vloft([{ y: 11.4, rx: 8.4, rz: 5.8, rf: 6.2 }, { y: 14.2, rx: 7.6, rz: 5 }, { y: 15.6, rx: 4.2, rz: 3.4 }], 10), (x, y) => y < 12.4 ? oFurDk : oFur, 0.1),
-      ...[...Array(10)].map((_, i) => {
-        const an = i / 10 * P2 * 2;
-        return paint(xf(gCone(1.3, 3.2, 4), Math.sin(an) * 7.9, 11, Math.cos(an) * 5.3, P2, 0, 0), oFurDk, 0.08);
-      })
-    ]);
-    const head = grp(spine, 0, 15.4, 0.3, "YXZ");
-    add(head, [
-      paint(
-        vloft([{ y: 0.4, rx: 3.1, rz: 3.1 }, { y: 2.6, rx: 4.9, rz: 4.7, z: 0.3 }, { y: 6, rx: 5.6, rz: 5.4 }, { y: 9.6, rx: 5, rz: 5.1 }, { y: 11.7, rx: 2.6, rz: 3 }], 8),
-        (x, y, z) => y < 3.4 && z > -1 ? skinDk : skin,
-        0.03
-      ),
-      paint(xf(gBox(1.5, 2.6, 1.4), 5.5, 5.6, 0.2), skinDk, 0.03),
-      paint(xf(gBox(1.5, 2.6, 1.4), -5.5, 5.6, 0.2), skinDk, 0.03),
-      paint(xf(gCone(0.95, 2.2, 3), 0, 5, 5.7, 1.25, 0, 0), skinDk, 0.02),
-      paint(xf(gBox(2.9, 0.55, 0.5), 2.2, 4.2, 5.25, 0, 0, 0.55), shade(skin, 0.1), 0),
-      // 뺨의 흉터
-      paint(xf(gBox(2.9, 0.75, 0.9), 2.35, 7.9, 5.15, 0, 0.1, 0.28), hair, 0.02),
-      paint(xf(gBox(2.9, 0.75, 0.9), -2.35, 7.9, 5.15, 0, -0.1, -0.28), hair, 0.02),
-      // 헝클어진 머리
-      ...isOrc ? [] : [
-        paint(vloft([{ y: 7, rx: 5.95, rz: 6, rf: 3.4, z: -0.7 }, { y: 10.2, rx: 5.5, rz: 5.7, rf: 4.6, z: -0.5 }, { y: 12.7, rx: 3, rz: 3.4, z: -0.3 }], 8), hair, 0.06),
-        paint(vloft([{ y: 2.2, rx: 4.6, rz: 4.9, rf: 0.2, z: -1.6 }, { y: 7.2, rx: 5.7, rz: 5.8, rf: 0.2, z: -1.5 }], 8), hair, 0.06)
-      ],
-      ...isHob || isOrc ? [] : [
-        ...[[0, 13.2, 0.5, 0.3, 0], [2.6, 12.6, -0.6, 0.1, -0.5], [-2.7, 12.5, -0.3, 0.2, 0.55], [1.2, 12.4, -3, -0.6, -0.2], [-1.6, 12.2, -3.2, -0.7, 0.3], [4.3, 10.8, -2.4, -0.4, -0.9], [-4.4, 10.7, -2.2, -0.4, 0.9], [0.2, 9.6, -6, -1.3, 0], [3, 8, -5.4, -1.4, -0.5], [-3, 7.8, -5.3, -1.4, 0.5]].map(([x, y, z, rx, rz], i) => paint(xf(gCone(1.5 + i % 3 * 0.25, 3.6 + i % 2 * 0.9, 4), x, y, z, rx, i, rz), hair, 0.07)),
-        ...[[-2.4, 9.6, 5, 2.5, 0.2], [0.3, 9.9, 5.3, 2.7, -0.1], [2.8, 9.5, 4.8, 2.5, -0.3]].map(([x, y, z, rx, rz]) => paint(xf(gCone(1.3, 3, 4), x, y, z, rx, 0, rz), hair, 0.06)),
-        // 낡은 머리띠 (고블린 투사는 없음)
-        paint(xf(gCyl(5.82, 5.72, 1.5, 8), 0, 8.2, 0.05), band2, 0.06),
-        paint(xf(gOct(1.3), 0, 8.2, -5.9, 0, 0, 0, 1.2, 0.9, 0.7), shade(band2, -0.07), 0.03)
-      ]
-    ]);
-    const eyeW = isOrc ? lin("#e0563a") : isG ? lin("#f2d14b") : white;
-    const eyes = add(head, [
-      paint(xf(gBox(1.55, 1.25, 0.5), 2.3, 6.3, 5.22), eyeW, 0),
-      paint(xf(gBox(1.55, 1.25, 0.5), -2.3, 6.3, 5.22), eyeW, 0),
-      paint(xf(gBox(1, 1.25, 0.5), 2.1, 6.3, 5.42), dark, 0),
-      paint(xf(gBox(1, 1.25, 0.5), -2.1, 6.3, 5.42), dark, 0)
-    ]);
-    eyes.position.y = 6.3;
-    eyes.geometry.translate(0, -6.3, 0);
-    const mouth = add(head, [paint(xf(gBox(2.4, 0.9, 0.5), 0, 0, 0), lin("#3a1c16"), 0)]);
-    mouth.position.set(0, 2.9, 5);
-    if (isHob) {
-      const lea = lin("#6b4a2c"), leaDk = lin("#4a3220"), stitch = lin("#c9b38a");
-      add(head, [
-        paint(vloft([{ y: 7, rx: 6.35, rz: 6.5, rf: 0.3, z: -0.4 }, { y: 10.4, rx: 6, rz: 6.2, rf: 0.6, z: -0.4 }, { y: 12.9, rx: 4.2, rz: 4.5, z: -0.4 }, { y: 14.1, rx: 1.2, rz: 1.3, z: -0.4 }], 9), lea, 0.07),
-        // 정수리
-        paint(xf(gCyl(6.55, 6.65, 1, 9), 0, 7.2, -0.4), leaDk, 0.05),
-        // 테두리
-        paint(xf(gBox(9.4, 4.4, 1.6), 0, 9.6, 5, -0.32, 0, 0), lea, 0.05),
-        // 이마 판 (정수리와 이어져 이마를 다 덮는다)
-        paint(xf(gBox(8.8, 1.5, 1.4), 0, 7.65, 5.6), leaDk, 0.05),
-        // 눈 위 테 (눈 바로 위)
-        paint(xf(gBox(1.5, 4.4, 1.1), 0, 5.4, 6.25), lea, 0.05),
-        paint(xf(gBox(1.1, 1, 1), 0, 3.1, 7, 0.35, 0, 0), leaDk, 0.04),
-        // 코 가리개: 코끝까지
-        ...[1, -1].map((sd) => paint(xf(gBox(2.4, 3.9, 1.2), sd * 4.25, 5, 4.75, 0, sd * 0.35, 0), lea, 0.05)),
-        // 뺨 가리개 (눈 바깥 아래)
-        ...[1, -1].map((sd) => paint(xf(gBox(1.2, 5.6, 4.6), sd * 5.9, 6.4, 1.6), leaDk, 0.05)),
-        // 옆판 (귀 앞까지)
-        ...[-3.2, -1.6, 1.6, 3.2].map((x) => paint(xf(gBox(0.32, 0.32, 0.3), x, 7.7, 6.35), stitch, 0)),
-        // 꿰맨 자국
-        paint(xf(gCone(0.9, 1.8, 5), 0, 14.6, -0.4), leaDk, 0.04)
-        // 꼭지
-      ]);
-    }
-    const tails = (isHob || isOrc ? [] : [-1, 1]).map((s) => {
-      const chain = [];
-      let p = grp(head, s * 0.8, 8.2, -6.2);
-      p.rotation.y = s * 0.25;
-      for (let i = 0; i < 3; i++) {
-        add(p, [paint(xf(gBox(1.5 - i * 0.25, 4.2, 0.35), 0, -2.1, 0), i % 2 ? shade(band2, -0.06) : band2, 0.05)]);
-        chain.push(p);
-        p = grp(p, 0, -4.2, 0);
-      }
-      return chain;
-    });
-    function arm(side) {
-      const sh = grp(spine, side * 7.6, 12.3, 0, "ZXY");
-      const up = [paint(vloft([{ y: -9, rx: 1.9, rz: 2 }, { y: -4.6, rx: 2.5, rz: 2.6 }, { y: 0.4, rx: 2.6, rz: 2.7 }], 7), skin)];
-      if (isOrc) {
-      } else if (side > 0) up.push(paint(vloft([{ y: -3.6, rx: 3.3, rz: 3.3 }, { y: -1, rx: 3.2, rz: 3.3 }, { y: 1.2, rx: 2.6, rz: 2.9 }], 7), (x, y) => y < -2.4 ? ragDk : rag1, 0.05));
-      else up.push(
-        // 찌그러진 청동 어깨 보호대
-        paint(jitter(xf(gIco(4.2, 1), -0.5, 0.4, 0, 0, 0, 0, 1.05, 0.72, 1.12), 0.22, 3), (x, y) => y < -0.3 ? shade(bronze, -0.1) : bronze, 0.07),
-        paint(xf(gBox(5.2, 0.9, 6.6), -0.9, -1.8, 0, 0, 0, 0.2), shade(bronze, -0.14), 0.05),
-        paint(xf(gOct(0.55), -2.6, 0.6, 3.3), ironHi, 0),
-        paint(xf(gOct(0.55), -2.6, 0.6, -3.3), ironHi, 0)
-      );
-      add(sh, up);
-      const el2 = grp(sh, 0, -9, 0);
-      add(el2, [paint(
-        vloft([{ y: -8.5, rx: 1.7, rz: 1.8 }, { y: -4.2, rx: 2.3, rz: 2.4 }, { y: 0, rx: 2.1, rz: 2.2 }], 7),
-        isOrc ? (x, y) => y < -1.4 && y > -7.8 ? Math.abs(y + 3) < 0.45 || Math.abs(y + 6.3) < 0.45 ? oIron : oLea : skin : side > 0 ? (x, y) => bands(y, -9, 1.35, wrap, wrapWear) : (x, y) => y < -1.8 && y > -7.6 ? Math.abs(y + 3.2) < 0.5 || Math.abs(y + 6.2) < 0.5 ? shade(leather, -0.1) : leather : skin,
-        0.04
-      )]);
-      const hd = grp(el2, 0, -8.5, 0);
-      add(hd, [paint(xf(gBox(3, 2.8, 3.2), 0, -1.3, 0.2), skin, 0.03), paint(xf(gBox(3.1, 1, 3.3), 0, -0.2, 0.2), isOrc ? oLea : side > 0 ? wrap : leather, 0.04)]);
-      return { sh, el: el2, hd };
-    }
-    const armL = arm(1), armR = arm(-1);
-    let club = null;
-    if (isG) {
-      if (isOrc) {
-        head.scale.set(1.12, 1, 1.06);
-        const tusk = lin("#efe6cc");
-        add(head, [
-          paint(xf(gBox(10.2, 1.9, 2.4), 0, 7.7, 4.2, 0.2, 0, 0), skinDk, 0.03),
-          // 눈썹뼈
-          paint(xf(gBox(3, 1.8, 1.6), 0, 4.9, 5.5, -0.2, 0, 0), skinDk, 0.03),
-          ...[1, -1].map((sd) => paint(xf(gBox(0.7, 0.6, 0.4), sd * 0.8, 4.3, 6.35), dark, 0)),
-          // 넓적코 · 콧구멍
-          paint(vloft([{ y: 0, rx: 3.6, rz: 3.2, z: 1.6 }, { y: 2.6, rx: 5, rz: 4.2, z: 1.2 }, { y: 3.8, rx: 5.2, rz: 4.4, z: 0.9 }], 8), skinDk, 0.03),
-          // 튀어나온 아래턱
-          ...[1, -1].map((sd) => paint(xf(gCone(0.85, 3.2, 4), sd * 2.4, 4, 5.3, -0.12, 0, -sd * 0.18), tusk, 0)),
-          // 아래에서 솟은 엄니
-          ...[1, -1].map((sd) => paint(xf(gCone(1, 3.2, 4), sd * 6.1, 6.6, -0.4, 0, 0, -sd * 1.9), skin, 0.04)),
-          // 작고 뾰족한 귀
-          ...[1, -1].map((sd) => paint(xf(gBox(0.7, 2.6, 0.4), sd * 2.3, 4.4, 5.35), oPaint, 0.02)),
-          // 눈 아래 붉은 줄 칠
-          paint(xf(gBox(0.5, 3.6, 0.4), -3.1, 9.6, 4.9, -0.3, 0, 0.35), shade(skin, 0.1), 0)
-          // 정수리 흉터
-        ]);
-      } else add(head, [
-        ...[1, -1].map((sd) => paint(xf(gCone(1.5, 7.5, 4), sd * 7.2, 6.8, -0.6, 0, sd * 0.25, -sd * 1.75), skin, 0.04)),
-        paint(xf(gCone(1.25, 3.4, 4), 0, 5.2, 6.3, 1.45, 0, 0), skinDk, 0.03),
-        paint(xf(gBox(0.6, 1.1, 0.5), 1, 2, 5.1), lin("#f1e9d0"), 0),
-        paint(xf(gBox(0.6, 1.1, 0.5), -1, 2, 5.1), lin("#f1e9d0"), 0)
-      ]);
-      club = grp(armR.hd, 0, -1.4, 0.4);
-      if (isHob) add(club, [
-        // 할버드: 긴 자루(양손) · 반대쪽으로 향한 도끼날 · 뒤쪽 갈고리 · 끝의 창날
-        paint(xf(gCyl(0.72, 0.72, 42, 6), 0, 0, 10, P2 / 2), lin("#4a3424"), 0.04),
-        paint(xf(gCyl(0.95, 0.95, 1.6, 6), 0, 0, -11, P2 / 2), lin("#6f777c"), 0.03),
-        paint(xf(gBox(1.8, 2.8, 5), 0, 0, 25), lin("#2f2a24"), 0.03),
-        // 날을 끼운 쇠통
-        paint(xf(gBox(0.8, 7.5, 9.5), 0, -5.2, 25.5), lin("#8e979c"), 0.03),
-        paint(xf(gBox(0.6, 1.6, 12.5), 0, -9.4, 25.5), lin("#d4dadd"), 0.02),
-        // 도끼날 (-y쪽) · 날 끝
-        paint(xf(gBox(0.7, 3.5, 2.6), 0, -7.6, 31, 0.5, 0, 0), lin("#8e979c"), 0.03),
-        paint(xf(gBox(0.7, 3.5, 2.6), 0, -7.6, 20, -0.5, 0, 0), lin("#8e979c"), 0.03),
-        // 날 위아래 뿔
-        paint(xf(gCone(1.3, 5.5, 4), 0, 3.6, 25.5, 0, 0, 0), lin("#6f777c"), 0.03),
-        // 뒤쪽 갈고리 (+y)
-        paint(xf(gCone(1.5, 8, 4), 0, 0, 34.5, P2 / 2, 0, 0), lin("#c3cacd"), 0.02)
-      ]);
-      else if (isOrc) add(club, [
-        // 약쟁이 오크: 짧은 단도
-        paint(xf(gBox(1.3, 1.3, 4), 0, 0, 0.5), lin("#3a2a1c"), 0.04),
-        paint(xf(gBox(3.2, 0.8, 0.9), 0, 0, 2.8), lin("#6f777c"), 0.03),
-        paint(xf(gBox(0.5, 1.7, 7.5), 0, 0, 7), lin("#c3cacd"), 0.02),
-        paint(xf(gCone(0.85, 2.4, 4), 0, 0, 11.8, P2 / 2, 0, 0), lin("#d4dadd"), 0.02)
-      ]);
-      else add(club, [
-        paint(xf(gCyl(0.7, 0.85, 6, 6), 0, 0, 0.5, P2 / 2), lin("#3a2a1c"), 0.04),
-        paint(xf(gCyl(2.4, 1.1, 14, 7), 0, 0, 10.5, P2 / 2), lin("#7a5230"), 0.06),
-        ...[[1.9, 1.2, 13], [-1.8, 1, 15], [0.4, -2.2, 14], [1.2, -1.6, 9.5], [-1.4, 1.9, 10.5]].map(([x, y, z]) => paint(xf(gOct(0.7), x, y, z), lin("#9aa3a8"), 0))
-      ]);
-    }
-    const potions = [];
-    let drinkBottle = null;
-    if (isOrc) {
-      const glass = lin("#b8334a"), cork = lin("#8a6a44");
-      const bottle = () => [paint(xf(gCyl(0.95, 1.05, 2.4, 6), 0, 0, 0), glass, 0.03), paint(xf(gCyl(0.4, 0.5, 1, 5), 0, 1.6, 0), glass, 0.02), paint(xf(gCyl(0.45, 0.45, 0.5, 5), 0, 2.3, 0), cork, 0.03)];
-      for (const t of [-5.4, -2.7, 0, 2.7, 5.4]) potions.push(add(grp(spine, -0.6 + 0.674 * t, 8 + 0.739 * t - 1, 5.4), bottle()));
-      drinkBottle = grp(armL.hd, 0, -2.6, 1.2);
-      add(drinkBottle, bottle());
-      drinkBottle.rotation.x = P2;
-      drinkBottle.visible = false;
-    }
-    let sword = null, woodSw = null, shield = null, spearG = null, knifeG = null, xbowG = null;
-    if (isKn) {
-      sword = grp(armR.hd, 0, -1.4, 0.4);
-      add(sword, [
-        paint(xf(gCyl(0.78, 0.78, 5.2, 6), 0, 0, -0.2, P2 / 2), (x, y, z) => bands(z, -3, 0.9, leather, shade(leather, -0.1)), 0.04),
-        paint(xf(gOct(1.25), 0, 0, -3.3), bronze, 0.05),
-        paint(xf(gBox(1.3, 5.6, 1.2), 0, 0, 2.7), bronze, 0.05),
-        paint(xf(gBox(1.5, 1.4, 1.5), 0, 0, 2.7), shade(bronze, -0.12), 0.04),
-        paint(
-          loft([{ z: 3.3, rx: 0.42, ry: 1.9 }, { z: 6, rx: 0.5, ry: 2.05 }, { z: 21, rx: 0.42, ry: 1.75 }, { z: 25.5, rx: 0.3, ry: 1.2 }, { z: 28.6, rx: 0.04, ry: 0.05 }], 4),
-          (x, y, z) => z < 7 && hash3(Math.round(z * 3), Math.round(y * 3), 1) > 0.45 ? rust : y * x > 0 ? blade : bladeDk,
-          0.05
-        ),
-        paint(xf(gOct(0.75), 0, 1.75, 13.5, 0, 0, 0, 0.9, 1, 1.5), dark, 0),
-        paint(xf(gOct(0.6), 0, -1.7, 18.8, 0, 0, 0, 0.9, 1, 1.4), dark, 0),
-        paint(xf(gOct(0.5), 0, 1.6, 22, 0, 0, 0, 0.9, 1, 1.3), dark, 0)
-        // 이 빠진 자국
-      ]);
-      woodSw = grp(armR.hd, 0, -1.4, 0.4);
-      {
-        const wd = shade(wood, 0.1), wdDk = shade(wood, -0.12), grain = (x, y, z) => Math.sin(z * 1.7 + y * 2.3) > 0.55 ? wdDk : wd;
-        add(woodSw, [
-          paint(xf(gCyl(0.8, 0.8, 5.2, 6), 0, 0, -0.2, P2 / 2), (x, y, z) => bands(z, -3, 0.9, wrap, shade(wrap, -0.18)), 0.04),
-          paint(xf(gOct(1.05), 0, 0, -3.3), wood2, 0.05),
-          paint(xf(gBox(1.5, 4.4, 1.4), 0, 0, 2.7), wood2, 0.05),
-          paint(xf(gBox(1.7, 1.2, 1.6), 0, 0, 2.7), shade(wood2, -0.12), 0.04),
-          paint(loft([{ z: 3.3, rx: 0.75, ry: 1.55 }, { z: 6, rx: 0.8, ry: 1.65 }, { z: 21.5, rx: 0.7, ry: 1.45 }, { z: 25.5, rx: 0.6, ry: 1.15 }, { z: 27.8, rx: 0.35, ry: 0.55 }], 6), grain, 0.05)
-        ]);
-      }
-      shield = grp(armL.el, 2.6, -4.6, 0.2);
-      {
-        const list = [paint(xf(gCyl(9.7, 9.7, 0.9, 10), 0.1, 0, 0, 0, 0, -P2 / 2), (x, y, z, ny, nx) => nx > 0.5 ? iron : ironHi, 0.07), paint(xf(gCyl(8.6, 8.6, 1.5, 10), 0.5, 0, 0, 0, 0, -P2 / 2), wood2, 0.05)];
-        for (let i = 0; i < 5; i++) {
-          const z = (i - 2) * 3.4, hgt = Math.sqrt(Math.max(1, 8.5 * 8.5 - z * z)) * 2 - 0.6;
-          list.push(paint(xf(gBox(0.5, hgt, 3), 1.35, 0, z), i % 2 ? wood : shade(wood, 0.05), 0.07));
-        }
-        list.push(paint(xf(gCyl(3.2, 3.2, 0.6, 8), 1.7, 0, 0, 0, 0, -P2 / 2), iron, 0.05), paint(xf(gCone(2.5, 2.4, 8), 3, 0, 0, 0, 0, -P2 / 2), ironHi, 0.06));
-        list.push(paint(xf(gBox(0.5, 9.5, 0.55), 1.7, 3.2, -3.9, 0.5, 0, 0), dark, 0), paint(xf(gBox(0.5, 4, 0.5), 1.7, -4.8, 4.4, -0.7, 0, 0), dark, 0));
-        list.push(paint(xf(gBox(0.6, 3, 2.4), 1.2, 7.4, 3.3, 0.5, 0, 0), shade(wood, 0.12), 0.04));
-        list.push(paint(xf(gCyl(0.34, 0.34, 7, 4), 4.6, -3.4, -3.2, 0, 0, -1.1), wood, 0.05), paint(xf(gBox(0.2, 1.6, 1.8), 7.6, -1.9, -3.2, 0, 0, -1.1), band2, 0.03));
-        list.push(paint(xf(gBox(0.8, 6, 1.4), -0.6, 0, 0), leather, 0.04));
-        add(shield, list);
-      }
-      spearG = grp(armR.hd, 0, -1.4, 0.4);
-      add(spearG, [paint(xf(gCyl(0.55, 0.55, 46, 5), 0, 0, 12, P2 / 2), wood, 0.05), paint(xf(gCone(1.5, 6.5, 4), 0, 0, 38, P2 / 2), ironHi, 0.03), paint(xf(gCyl(0.9, 0.9, 1.4, 6), 0, 0, 34.5, P2 / 2), leather, 0.03)]);
-      knifeG = grp(armR.hd, 0, -1.4, 0.4);
-      add(knifeG, [paint(xf(gBox(0.7, 0.9, 3.2), 0, 0, -0.4), leather, 0.03), paint(loft([{ z: 1.2, rx: 0.3, ry: 1.1 }, { z: 6.5, rx: 0.06, ry: 0.06 }], 4), blade, 0.03)]);
-      xbowG = grp(armR.hd, 0, -1.6, 0.6);
-      add(xbowG, [
-        paint(xf(gBox(1.4, 1.6, 13), 0, 0.2, 4), wood2, 0.05),
-        paint(xf(gBox(16, 0.9, 1.2), 0, 0.6, 9.5), wood, 0.05),
-        paint(xf(gBox(0.4, 0.4, 9), 0, 1.4, 6), ironHi, 0.02),
-        paint(xf(gBox(0.6, 0.6, 3), 0, -1, 0.6), iron, 0.03)
-      ]);
-    }
-    let bowG = null, strU = null, strD = null, nock = null;
-    if (!isK) {
-      const limb = lin("#7a5230"), limbDk = lin("#5a3b20"), grip = lin("#3a2a1c"), fletch = lin("#d8c9a8"), tipC = lin("#9aa3a8");
-      bowG = grp(armL.hd, 0, -1.6, 0.4, "XYZ");
-      const pts = [];
-      for (let i = 0; i <= 8; i++) {
-        const u = i / 8 * 2 - 1;
-        pts.push([u * 15, 3.4 * (1 - u * u)]);
-      }
-      const list = [];
-      for (let i = 0; i < 8; i++) {
-        const [y0, z0] = pts[i], [y1, z1] = pts[i + 1], my = (y0 + y1) / 2, mz = (z0 + z1) / 2, L = Math.hypot(y1 - y0, z1 - z0), ang = Math.atan2(z1 - z0, y1 - y0);
-        list.push(paint(xf(gBox(0.9 - Math.abs(my) * 0.025, L + 0.3, 1.2), 0, my, mz, ang, 0, 0), i === 3 || i === 4 ? grip : i % 2 ? limb : limbDk, 0.05));
-      }
-      list.push(paint(xf(gBox(1.4, 4.2, 1.8), 0, 0, 3.3), grip, 0.04));
-      add(bowG, list);
-      bowG.children[bowG.children.length - 1].geometry.computeBoundingSphere();
-      const sMat = new T3.MeshBasicMaterial({ color: lin("#e8dcc0"), fog: true });
-      const mkStr = () => {
-        const m = new T3.Mesh(new T3.BoxGeometry(0.3, 1, 0.3), sMat);
-        m.geometry.translate(0, 0.5, 0);
-        bowG.add(m);
-        return m;
-      };
-      strU = mkStr();
-      strD = mkStr();
-      nock = grp(bowG, 0, 0, 0);
-      add(nock, [
-        paint(xf(gCyl(0.28, 0.28, 22, 4), 0, 0, 9, P2 / 2), limb, 0.03),
-        paint(xf(gCone(0.75, 2.4, 4), 0, 0, 21, P2 / 2), tipC, 0.02),
-        paint(xf(gBox(0.15, 1.6, 2.6), 0, 0.5, -0.8), fletch, 0.03),
-        paint(xf(gBox(0.15, 1.6, 2.6), 0, -0.5, -0.8, 0, 0, P2), fletch, 0.03)
-      ]);
-      const quiver = grp(spine, -1.5, 8, -5.2);
-      quiver.rotation.set(-0.2, 0, -0.45);
-      const ql = [paint(xf(gCyl(2.1, 1.8, 14, 7), 0, 0, 0), lin("#6b4a2c"), 0.06), paint(xf(gCyl(2.3, 2.3, 1.2, 7), 0, 6.6, 0), lin("#4a321e"), 0.05), paint(xf(gCyl(2.2, 2.2, 0.9, 7), 0, -3, 0), lin("#4a321e"), 0.05)];
-      for (let i = 0; i < 5; i++) {
-        const ox = Math.cos(i * 1.3) * 1.1, oz = Math.sin(i * 1.3) * 1.1;
-        ql.push(paint(xf(gCyl(0.22, 0.22, 4, 4), ox, 8.5, oz), limb, 0.03), paint(xf(gBox(0.15, 2.4, 1.6), ox, 10.4, oz, 0, i, 0), i % 2 ? fletch : lin("#b0412e"), 0.04));
-      }
-      add(quiver, ql);
-      add(head, [
-        paint(vloft([{ y: 2.4, rx: 6.3, rz: 6.2, rf: 0.4, z: -1.2 }, { y: 7.4, rx: 6.6, rz: 6.6, rf: 2.2, z: -0.8 }, { y: 11.2, rx: 5.6, rz: 5.9, rf: 4.2, z: -0.6 }, { y: 13.6, rx: 2.4, rz: 3, z: -1.2 }], 9), capeC, 0.05),
-        paint(xf(gCone(2.2, 4.6, 5), 0, 9.6, -6.6, -2.2, 0, 0), shade(capeC, -0.05), 0.04)
-      ]);
-    }
-    const cape = [];
-    if (!isG) {
-      let p = grp(spine, 2.6, 13.4, -4.6);
-      p.rotation.order = "YXZ";
-      const W4 = [10.5, 11.5, 11, 10];
-      for (let i = 0; i < 4; i++) {
-        const w0 = W4[i], w1 = W4[Math.min(3, i + 1)], L = 6.2;
-        const pts = i < 3 ? [[-w0 / 2, 0], [w0 / 2, 0], [w1 / 2, -L], [-w1 / 2, -L]] : [[-w0 / 2, 0], [w0 / 2, 0], [w0 * 0.5, -L * 0.7], [w0 * 0.3, -L * 1.25], [w0 * 0.12, -L * 0.75], [-w0 * 0.1, -L * 1.4], [-w0 * 0.28, -L * 0.8], [-w0 * 0.5, -L * 1.1]];
-        const list = [paint(slab(pts, 0.45), (x, y) => i === 3 && y < -L * 0.7 ? shade(capeC, -0.07) : capeC, 0.06)];
-        if (i === 1) list.push(paint(xf(gBox(3.4, 3, 0.3), -1.8, -3, -0.35, 0, 0, 0.2), pat1, 0.05));
-        if (i === 2) list.push(paint(xf(gBox(2.6, 2.4, 0.3), 2.6, -2.2, -0.35, 0, 0, -0.3), rag2, 0.05));
-        if (i === 0) list.push(paint(xf(gBox(11.5, 1.6, 1.2), 0, 0.2, 0.2), shade(capeC, -0.1), 0.05));
-        add(p, list);
-        cape.push(p);
-        p = grp(p, 0, -L, 0);
-      }
-    }
+    const emis = (r, g, b) => {
+      for (const m of mats.all) m.emissive.setRGB(r, g, b);
+    }, emisC = (c, k) => {
+      for (const m of mats.all) m.emissive.copy(c).multiplyScalar(k);
+    };
     const a = { aim: spr(0), aimR: spr(0), rel: spr(0), init: false, x: 0, y: 0, phase: 0, spd: 0, yaw: spr(0), move: spr(0), guard: spr(0), dodge: spr(0), side: spr(0), hurt: spr(0), push: spr(0), cheer: spr(0), chg: spr(0), acc: spr(0), dashW: spr(0), dashR: spr(0), rest: spr(0), brk: spr(0), turnK: spr(0), turnPh: 0, lastYaw: 0, ik: spr(0), fwdV: 0, prevSp: -1, prevSw: false, prevHeavy: false, blink: 0 };
     const aura = c3("c-aura");
     const _t = new T3.Vector3(), _hv = new T3.Vector3(), _q = new T3.Quaternion(), _qt = new T3.Quaternion(), _e = new T3.Vector3(), _ax = new T3.Vector3();
     const UP_A = 9, LO_A = 8.5;
     function reachL(target, k = 1) {
       root3.updateMatrixWorld(true);
-      spine.worldToLocal(_t.copy(target));
+      armL.sh.parent.worldToLocal(_t.copy(target));
       _t.sub(armL.sh.position);
       const d = Math.min(UP_A + LO_A - 0.05, Math.max(Math.abs(UP_A - LO_A) + 0.2, _t.length()));
       const le = P2 - Math.acos(clampv((UP_A * UP_A + LO_A * LO_A - d * d) / (2 * UP_A * LO_A), -1, 1));
@@ -8117,9 +8632,160 @@ h3 {
       armL.el.rotation.x = -le * k + armL.el.rotation.x * (1 - k);
       root3.updateMatrixWorld(true);
     }
+    const D2 = { E: 0, ph: 0, prevArm: new T3.Quaternion(), sac: new T3.Vector3(), sacT: 0, gaze: new T3.Vector3(), shW: 0, shV: 0, pain: 0, F: 0, Pn: 0, Rz: 0 };
+    let effort = 0;
+    function breathe(dt) {
+      D2.ph += dt * P2 * 2 * (0.3 + 0.62 * D2.E);
+      const b = Math.sin(D2.ph), deep = 1 + 1.6 * D2.E;
+      chest.scale.set(1 + 0.03 * b * deep, 1 + 0.01 * b * deep, 1 + 0.06 * b * deep);
+      return b * deep;
+    }
+    const _dir = new T3.Vector3(), _cq = new T3.Quaternion();
+    function clavFix(lift) {
+      for (const [A2, s] of [[armL, 1], [armR, -1]]) {
+        A2.clav.rotation.set(0, 0, 0);
+        _dir.set(0, -1, 0).applyQuaternion(A2.sh.quaternion);
+        const raise = clampv((Math.acos(clampv(-_dir.y, -1, 1)) - 1) / 1.6, 0, 1), fwd = clampv(_dir.z, 0, 1);
+        A2.clav.rotation.set(0, -s * 0.14 * fwd * raise, s * (0.3 * raise + lift));
+        _cq.copy(A2.clav.quaternion).invert();
+        A2.sh.quaternion.premultiply(_cq);
+      }
+    }
+    const V = () => new T3.Vector3(), _q1 = new T3.Quaternion(), _q2 = new T3.Quaternion(), _v1 = V(), _v2 = V(), DOWN = new T3.Vector3(0, -1, 0), UPY = new T3.Vector3(0, 1, 0);
+    const springs = [[head, 200, 0.62, 0.5, false], [armR.el, 520, 0.45, 0.4, false], [armR.hd, 380, 0.42, 0.5, false], [armL.el, 320, 0.55, 0.35, true], [armL.hd, 300, 0.5, 0.35, true]].map(([j, K, Z, max, left]) => ({ j, K, Z, max, left, q: null, w: V() }));
+    function qstep(sp, qt, dt) {
+      if (!sp.q || dt > 0.2 || game.snapAnim) {
+        sp.q = qt.clone();
+        sp.w.set(0, 0, 0);
+        return;
+      }
+      let rem = dt;
+      const c = 2 * sp.Z * Math.sqrt(sp.K);
+      while (rem > 1e-6) {
+        const h = Math.min(rem, 1 / 120);
+        _q1.copy(qt).multiply(_q2.copy(sp.q).invert());
+        if (_q1.w < 0) {
+          _q1.x = -_q1.x;
+          _q1.y = -_q1.y;
+          _q1.z = -_q1.z;
+          _q1.w = -_q1.w;
+        }
+        const ang = 2 * Math.acos(clampv(_q1.w, -1, 1)), sn = Math.sqrt(Math.max(0, 1 - _q1.w * _q1.w));
+        _v1.set(_q1.x, _q1.y, _q1.z).multiplyScalar(sn > 1e-6 ? ang / sn : 0);
+        sp.w.addScaledVector(_v1, sp.K * h).multiplyScalar(1 - Math.min(1, c * h));
+        const wl = sp.w.length();
+        if (wl > 1e-6) {
+          _q1.setFromAxisAngle(_v2.copy(sp.w).divideScalar(wl), wl * h);
+          sp.q.premultiply(_q1).normalize();
+        }
+        rem -= h;
+      }
+    }
+    const pend = [];
+    for (const f of model.flaps) pend.push({ g: f.b, ang: f.ang, out: f.out, face: f.face, L: f.len, w0: 50 / Math.sqrt(f.len / 6), z: 0.16, x: 0, z0: 0, vx: 0, vz: 0, prev: null, pv: V(), acc: V(), kin: 0.22, drag: 4e-3, flap: true });
+    model.tails.forEach((ch, k) => ch.forEach((g, i) => pend.push({ g, ang: g.rotation.y, out: 1, face: 0, L: 3.3, w0: 95, z: 0.14, x: g.rotation.x, z0: g.rotation.z, vx: 0, vz: 0, prev: null, pv: V(), acc: V(), kin: 0.25, drag: 0.012, rest: i === 0 ? 0.55 : 0.1, seed: k * 3 + i })));
+    function detail(dt, S3) {
+      const snap2 = game.snapAnim || dt > 0.2;
+      D2.t = (D2.t || 0) + dt;
+      root3.updateMatrixWorld(true);
+      const armSpd = dt > 0 ? 2 * Math.acos(clampv(Math.abs(D2.prevArm.dot(armR.sh.quaternion)), -1, 1)) / dt : 0;
+      D2.prevArm.copy(armR.sh.quaternion);
+      effort = clampv(armSpd / 7 + S3.chg + S3.dodge * 0.8 + Math.max(0, S3.spd - 120) / 300, 0, 1);
+      if (dt > 0) D2.E += (Math.max(effort, S3.hurt) - D2.E) * (effort > D2.E ? Math.min(1, dt * 5) : dt * 0.18);
+      if (S3.hitKick) D2.pain = 1;
+      D2.pain = Math.max(0, D2.pain - dt * 1.4);
+      if (S3.blockKick) D2.shV += 5;
+      for (const sp of springs) {
+        if (sp.left && S3.noL) {
+          sp.q = null;
+          continue;
+        }
+        const j = sp.j, pq = j.parent.getWorldQuaternion(new T3.Quaternion()), tq = pq.clone().multiply(j.quaternion);
+        if (snap2) {
+          sp.q = tq.clone();
+          sp.w.set(0, 0, 0);
+          continue;
+        }
+        if (dt <= 0) {
+          if (!sp.q) continue;
+        } else qstep(sp, tq, dt);
+        const local = pq.invert().multiply(sp.q), d = 2 * Math.acos(clampv(Math.abs(local.dot(j.quaternion)), -1, 1));
+        j.quaternion.slerp(local, d > sp.max ? sp.max / d : 1);
+        j.updateMatrixWorld(true);
+      }
+      if (dt > 0) {
+        D2.shV += (-90 * D2.shW - 2 * 0.25 * Math.sqrt(90) * D2.shV) * dt;
+        D2.shW += D2.shV * dt;
+      }
+      if (shield) shield.rotation.set(D2.shW * 0.12, 0, D2.shW * 0.05);
+      const liftF = Math.max(0, -legL.th.rotation.x, -legR.th.rotation.x), liftB = Math.max(0, legL.th.rotation.x, legR.th.rotation.x);
+      for (const p of pend) {
+        const g = p.g, wp = g.getWorldPosition(V());
+        if (!p.prev || snap2) {
+          p.prev = wp.clone();
+          p.pv.set(0, 0, 0);
+          p.acc.set(0, 0, 0);
+        }
+        if (dt > 0 && !snap2) {
+          const vel = wp.clone().sub(p.prev).divideScalar(dt);
+          p.acc.lerp(vel.clone().sub(p.pv).divideScalar(dt), 0.5);
+          p.pv.copy(vel);
+          p.prev.copy(wp);
+          const iq = g.parent.getWorldQuaternion(new T3.Quaternion()).invert(), ry = new T3.Quaternion().setFromAxisAngle(UPY, -p.ang);
+          const d = DOWN.clone().applyQuaternion(iq).applyQuaternion(ry), aL = p.acc.clone().applyQuaternion(iq).applyQuaternion(ry), vL = vel.applyQuaternion(iq).applyQuaternion(ry);
+          const tx = Math.atan2(-d.z, -d.y) + (p.rest || 0) + clampv(vL.z * p.drag, -0.9, 0.9), tz = Math.atan2(d.x, -d.y) - clampv(vL.x * p.drag, -0.9, 0.9);
+          const flutter = p.flap ? 0 : Math.sin(D2.ph * 4 + p.seed * 2.1 + D2.t * 17) * Math.min(1, S3.spd / 260) * 5, c = 2 * p.z * Math.sqrt(p.w0);
+          let rem = dt;
+          while (rem > 1e-6) {
+            const hh = Math.min(rem, 1 / 120);
+            p.vx += (-p.w0 * (p.x - tx) - c * p.vx + aL.z * p.kin / p.L * 0.3 + flutter) * hh;
+            p.vz += (-p.w0 * (p.z0 - tz) - c * p.vz - aL.x * p.kin / p.L * 0.3) * hh;
+            p.x += p.vx * hh;
+            p.z0 += p.vz * hh;
+            rem -= hh;
+          }
+          if (p.flap) {
+            const push = (Math.max(0, p.face) * liftF + Math.max(0, -p.face) * liftB) * 0.95;
+            if (-p.x * p.out < push) {
+              p.x = -push * p.out;
+              if (-p.vx * p.out < 0) p.vx = 0;
+            }
+            p.x = clampv(p.x, -1.3, 1.3);
+            p.z0 = clampv(p.z0, -0.8, 0.8);
+          } else {
+            p.x = clampv(p.x, -0.5, 1.7);
+            p.z0 = clampv(p.z0, -1, 1);
+          }
+        }
+        g.rotation.x = p.x;
+        g.rotation.z = p.z0;
+        g.updateMatrixWorld(true);
+      }
+      eyes.scale.y = Math.min(eyes.scale.y, 1 - 0.3 * clampv(effort + D2.pain, 0, 1));
+      const k = Math.min(1, dt * 10);
+      D2.F += (clampv(effort * 1.2 + S3.chg + S3.guard * 0.6, 0, 1) * (1 - D2.pain) - D2.F) * k;
+      D2.Pn += (clampv(D2.pain + S3.hurt * 0.6 + Math.max(0, D2.E - 0.6) + S3.ko, 0, 1) - D2.Pn) * k;
+      D2.Rz += (clampv(S3.cheer + S3.eur, 0, 1) - D2.Rz) * k;
+      for (const br of model.brows) {
+        const s = br.s;
+        br.b.position.set(br.p0.x - s * 0.12 * D2.F, br.p0.y - 0.16 * D2.F + 0.1 * D2.Pn + 0.38 * D2.Rz, br.p0.z);
+        br.b.rotation.set(br.r0.x, br.r0.y, br.r0.z + s * (0.2 * D2.F - 0.34 * D2.Pn - 0.06 * D2.Rz));
+      }
+      D2.sacT -= dt;
+      if (D2.sacT <= 0) {
+        D2.sacT = 0.5 + Math.random() * 1.8;
+        D2.sac.set((Math.random() - 0.5) * 0.24, (Math.random() - 0.5) * 0.1, 0);
+      }
+      D2.gaze.lerp(D2.E > 0.3 ? _v1.set(0, 0, 0) : D2.sac, Math.min(1, dt * 18));
+      for (const ir of model.irises) {
+        if (!ir.p0) ir.p0 = ir.position.clone();
+        ir.position.set(ir.p0.x + D2.gaze.x, ir.p0.y + D2.gaze.y, ir.p0.z);
+      }
+    }
     function update(h, t) {
+      const hitKick = a.hurt.v - (a.pHurt || 0) > 3, blockKick = a.push.v - (a.pPush || 0) > 3;
       if (h.downT > 0) {
-        const T = C2.DOWN_FLY + C2.DOWN_LIE + C2.DOWN_UP, el2 = T - h.downT;
+        const T4 = C2.DOWN_FLY + C2.DOWN_LIE + C2.DOWN_UP, el2 = T4 - h.downT;
         const fall = el2 < C2.DOWN_FLY ? EASE.io(clampv(el2 / C2.DOWN_FLY, 0, 1)) : el2 < C2.DOWN_FLY + C2.DOWN_LIE ? 1 : 1 - EASE.io(clampv((el2 - C2.DOWN_FLY - C2.DOWN_LIE) / C2.DOWN_UP, 0, 1));
         h = { ...h, ko: true, fall, jump: el2 < C2.DOWN_FLY ? Math.sin(el2 / C2.DOWN_FLY * P2) * 16 : 0, action: -1, guard: false };
       }
@@ -8214,16 +8880,16 @@ h3 {
       }
       lean += acc * 0.3;
       if (bashK > 0.01 && isKn) {
-        const wind3 = EASE.out(clampv(bp / 0.6, 0, 1)), thr = EASE.out(clampv((bp - 0.6) / 0.4, 0, 1)), hold = a.bashFol > 0 ? Math.min(1, a.bashFol / 0.42 * 1.6) : 1, k = bashK;
+        const wind = EASE.out(clampv(bp / 0.6, 0, 1)), thr = EASE.out(clampv((bp - 0.6) / 0.4, 0, 1)), hold = a.bashFol > 0 ? Math.min(1, a.bashFol / 0.42 * 1.6) : 1, k = bashK;
         const ext = thr * hold;
         ls = lerp(ls, lerp(0.6, 1.62, ext), k);
         lt = lerp(lt, lerp(-1.5, -0.5, ext), k);
         lr = lerp(lr, lerp(0.2, -0.08, ext), k);
         le = lerp(le, lerp(2.1, 0.12, ext), k);
-        twist = lerp(twist, lerp(-1.25 * wind3, 0.6, ext), k);
-        lean = lerp(lean, lerp(-0.15 * wind3, 0.72, ext), k);
+        twist = lerp(twist, lerp(-1.25 * wind, 0.6, ext), k);
+        lean = lerp(lean, lerp(-0.15 * wind, 0.72, ext), k);
         bend = lerp(bend, lerp(0.15, 0.38, ext), k);
-        drop += (3.6 * wind3 * (1 - ext) + 3 * ext) * k;
+        drop += (3.6 * wind * (1 - ext) + 3 * ext) * k;
         lth += (0.25 + 0.65 * ext) * k;
         lkn += (0.35 + 0.6 * ext) * k;
         rth -= 0.6 * ext * k;
@@ -8577,7 +9243,7 @@ h3 {
         hy = lerp(hy, 0.5, ko);
         mouthOpen = 0.9;
       }
-      const reach2 = Math.max(LEG * Math.cos(lth) + LEG * Math.cos(lth - lkn), LEG * Math.cos(rth) + LEG * Math.cos(rth - rkn));
+      const reach2 = Math.max(LEG2 * Math.cos(lth) + LEG2 * Math.cos(lth - lkn), LEG2 * Math.cos(rth) + LEG2 * Math.cos(rth - rkn));
       const by = air ? 23 : lerp(reach2 + FOOT + 1.5 - drop * 0.35 + bob + jump, 5.2, ko);
       root3.position.set(h.x, jumpH, h.y);
       root3.rotation.y = yaw;
@@ -8587,23 +9253,20 @@ h3 {
       hips.rotation.set(tip, twist, roll);
       waist.rotation.x = lean;
       spine.rotation.set(bend, stw, 0);
-      head.rotation.set(hx, hy, hz);
+      neck.rotation.set(hx * 0.45, hy * 0.4, hz * 0.4);
+      head.rotation.set(hx * 0.55, hy * 0.6, hz * 0.6);
       armR.sh.rotation.set(-rs, rt, -rr);
       armR.el.rotation.x = -re;
       armR.hd.rotation.x = rw;
-      if (isKn) {
-        sword.visible = !ranged && wpn !== "spear" && wpn !== "sword";
-        woodSw.visible = wpn === "sword";
-        spearG.visible = wpn === "spear";
-        knifeG.visible = wpn === "knife";
-        xbowG.visible = wpn === "xbow";
-        const ws2 = wpn === "great" ? [1.35, 1.35, 1.4] : wpn === "dagger" ? [0.8, 0.8, 0.48] : [1, 1, 1];
-        sword.scale.set(ws2[0], ws2[1], ws2[2]);
+      if (shield) {
         const ss = h.grd === "tower" ? 1.45 : h.grd === "buckler" ? 0.62 : 1;
         shield.scale.set(1, ss, ss);
       }
       armL.sh.rotation.set(-ls, lt, lr);
       armL.el.rotation.x = -le;
+      const bk = breathe(dt);
+      neck.rotation.x += 0.025 * bk;
+      clavFix(0.03 * bk);
       legL.th.rotation.set(-lth, 0, splay);
       legL.kn.rotation.x = lkn;
       legL.ft.rotation.x = (lth - lkn) * (1 - ko) + toeL;
@@ -8617,49 +9280,28 @@ h3 {
         stepFeet(feet, h.x, h.y, yaw, h.vx || 0, h.vy || 0, dt, game.snapAnim, HS);
         applyFeet(feet, ikW, HS);
       } else feet.ok = false;
-      if (isHob && club) reachL(club.localToWorld(_hv.set(0, 0, -8)));
+      if (isHob) reachL(weapon.localToWorld(_hv.set(0, 0, -8)));
+      let dk = 0;
       if (isOrc) {
         potions.forEach((p, i) => {
           p.visible = i < (h.potions ?? 5);
         });
-        const dk = follow(a.drink || (a.drink = spr(0)), h.drink ? 1 : 0, 220, 0.9);
+        dk = follow(a.drink || (a.drink = spr(0)), h.drink ? 1 : 0, 220, 0.9);
         drinkBottle.visible = dk > 0.3;
         if (dk > 0.02) reachL(head.localToWorld(_hv.set(0, 3.2, 8.5)), dk);
-      }
-      const fl = clampv(a.spd / 260, 0, 1.2) * (fwdV >= 0 ? 1 : -0.4), wind = Math.sin(t * 3.1), wind2 = Math.sin(t * 4.7 + 1);
-      cape.forEach((c, i) => {
-        c.rotation.x = (i === 0 ? 0.16 : 0.07) + fl * (i === 0 ? 0.55 : 0.2) + wind * 0.035 * (i + 1) + Math.max(0, -tip) * 0.2 - hurt * 0.3;
-        c.rotation.z = wind2 * 0.02 * i + side * 0.12;
-      });
-      tails.forEach((ch, k) => ch.forEach((c, i) => {
-        c.rotation.x = (i === 0 ? 0.5 : 0.12) + fl * 0.5 + Math.sin(t * 5.3 + k * 2 + i) * 0.1 * (1 + fl);
-      }));
-      for (const s of skirt) {
-        const front = Math.cos(s.ang), sideK = Math.sin(s.ang), thigh = sideK >= 0 ? lth : rth;
-        s.g.rotation.x = -0.16 - Math.max(0, front * thigh) * 0.75 - Math.max(0, -front * -thigh) * 0.4 - fl * 0.25 * Math.max(0, -front) + Math.sin(t * 4.1 + s.ang * 3) * 0.035 - dz * 0.4;
       }
       a.blink -= dt;
       if (a.blink < -3.4) a.blink = 0.12;
       eyes.scale.y = ko > 0.3 || hurt > 0.2 ? 0.18 : a.blink > 0 ? 0.15 : 1;
-      mouth.scale.set(mouthOpen > 0.5 ? 1 : 0.8, Math.max(0.42, mouthOpen * 1.6), 1);
-      if (bowG) {
-        bowG.rotation.set(lerp(-0.35, 0, aimK), 0, lerp(0.25, P2 / 2, aimK));
-        const pullZ = -1.2 - 19 * EASE.out(clampv(draw2 / 0.7, 0, 1)) * aimK * (h.swingT > 0 ? 0 : 1);
-        const tipU = [0, 15, 0], tipD = [0, -15, 0], nk = [0, 0, pullZ];
-        for (const [m2, tp] of [[strU, tipU], [strD, tipD]]) {
-          const dy2 = tp[1] - nk[1], dz2 = tp[2] - nk[2], L = Math.hypot(dy2, dz2);
-          m2.position.set(0, nk[1], nk[2]);
-          m2.scale.set(1, L, 1);
-          m2.rotation.set(Math.atan2(dz2, dy2), 0, 0);
-        }
-        nock.visible = (h.drawT > 0 || h.chargeT > 0) && aimK > 0.3;
-        nock.position.z = pullZ + 1.2;
-      }
-      if ((flash[FK] || 0) > 0) mat2.emissive.setRGB(0.9, 0.9, 0.9);
-      else if (h.glow > 0) mat2.emissive.setRGB(0.3 * h.glow * (0.75 + 0.25 * Math.sin(t * 24)), 0.03 * h.glow, 0);
-      else if (chg > 0.02 && !isG) mat2.emissive.copy(aura).multiplyScalar(chg * (0.03 + 0.07 * cp + 0.025 * Math.sin(t * 30)));
-      else if (!isK && h.chargeT > 0) mat2.emissive.copy(aura).multiplyScalar(0.03 + 0.06 * draw2 + 0.02 * Math.sin(t * 30));
-      else mat2.emissive.setRGB(0, 0, 0);
+      const open2 = clampv((Math.max(0.42, mouthOpen * 1.6) - 0.42) / 1.18, 0, 1.2);
+      mouth.scale.set(0.85 + 0.25 * open2, 1 + 2.6 * open2, 1);
+      detail(dt, { hurt: Math.max(0, hurt), guard: g, chg, cheer, dodge: dz, eur, spd: a.spd, hitKick, blockKick, ko, noL: isHob || dk > 0.02 });
+      a.pHurt = a.hurt.v;
+      a.pPush = a.push.v;
+      if ((flash[FK] || 0) > 0) emis(0.9, 0.9, 0.9);
+      else if (h.glow > 0) emis(0.3 * h.glow * (0.75 + 0.25 * Math.sin(t * 24)), 0.03 * h.glow, 0);
+      else if (chg > 0.02 && !isG) emisC(aura, chg * (0.03 + 0.07 * cp + 0.025 * Math.sin(t * 30)));
+      else emis(0, 0, 0);
       if (dt > 0 && !game.snapAnim) {
         if (sw && !heavy && a.prevSp < 0.3 && sp >= 0.3) slash3(h.x, h.y, yaw, false);
         if (sw && heavy && !(a.prevSw && a.prevHeavy)) slash3(h.x, h.y, yaw, true);
@@ -8676,7 +9318,7 @@ h3 {
       a.prevSw = sw;
       a.prevHeavy = heavy;
     }
-    return { root: root3, update, a, mat: mat2, feet, kind, armR, armL, head };
+    return { root: root3, update, a, mats, feet, kind, armR, armL, head, tris: model.tris };
   }
   var heroRig = makeHeroRig("knight");
 
@@ -9305,7 +9947,7 @@ h3 {
   var boarRig = makeBoarRig("boar");
 
   // src/render/rigs/scorpion.js
-  function bone(p0, p1, r0, r1, n = 5) {
+  function bone2(p0, p1, r0, r1, n = 5) {
     const d = new T3.Vector3(p1[0] - p0[0], p1[1] - p0[1], p1[2] - p0[2]), len2 = d.length(), rm = (r0 + r1) / 2 * 1.15;
     const g = loft([{ z: 0, rx: r0, ry: r0 }, { z: len2 * 0.5, rx: rm, ry: rm }, { z: len2, rx: r1, ry: r1 }], n);
     g.applyMatrix4(new T3.Matrix4().makeRotationFromQuaternion(new T3.Quaternion().setFromUnitVectors(new T3.Vector3(0, 0, 1), d.normalize())));
@@ -9314,7 +9956,7 @@ h3 {
   }
   var scorpRig = (() => {
     const mat2 = charMat(), eyeMat = new T3.MeshBasicMaterial({ color: 16777215, fog: false }), glowMat = new T3.MeshBasicMaterial({ color: 16777215, fog: false, toneMapped: false });
-    const shell = c3("k-s-shell"), shellHi = c3("k-s-shell-hi"), shellDk = c3("k-s-shell-dk"), under = c3("k-s-belly"), joint = c3("k-s-joint"), tip = c3("k-s-tip"), sting = c3("k-s-sting");
+    const shell2 = c3("k-s-shell"), shellHi = c3("k-s-shell-hi"), shellDk = c3("k-s-shell-dk"), under = c3("k-s-belly"), joint = c3("k-s-joint"), tip = c3("k-s-tip"), sting = c3("k-s-sting");
     const iron = c3("k-iron"), ironHi = c3("k-iron-hi"), eyeLo = c3("k-b-eye-lo"), eyeHi = c3("k-b-eye"), dark = lin("#120d14");
     const root3 = grp(scene), rig = grp(root3), body = grp(rig, 0, 9.5, 0, "YXZ");
     const add = (parent, list2) => {
@@ -9323,11 +9965,11 @@ h3 {
       return m;
     };
     const plate = (tone2) => (x, y, z, ny) => ny > 0.45 ? mix(tone2, shellHi, 0.55) : ny < -0.3 ? under : tone2;
-    const list = [paint(jitter(loft([{ z: 3, y: 0.5, rx: 11.6, ry: 4.6, rb: 3.2 }, { z: 10, y: 0.7, rx: 12.6, ry: 5.4, rb: 3.4 }, { z: 17, y: 0.3, rx: 10.2, ry: 4.6, rb: 3 }, { z: 22, y: -0.2, rx: 6.2, ry: 2.8, rb: 2.1 }], 8), 0.25, 7), plate(shell), 0.06)];
+    const list = [paint(jitter(loft([{ z: 3, y: 0.5, rx: 11.6, ry: 4.6, rb: 3.2 }, { z: 10, y: 0.7, rx: 12.6, ry: 5.4, rb: 3.4 }, { z: 17, y: 0.3, rx: 10.2, ry: 4.6, rb: 3 }, { z: 22, y: -0.2, rx: 6.2, ry: 2.8, rb: 2.1 }], 8), 0.25, 7), plate(shell2), 0.06)];
     const PW = [12.6, 12.9, 12.1, 10.6, 8.6], PH = [5.3, 5.7, 5.5, 4.9, 4.1];
     for (let i = 0; i < 5; i++) {
       const z0 = 4.4 - i * 4.5, w1 = i < 4 ? PW[i + 1] : 6.4, h1 = i < 4 ? PH[i + 1] : 3.2;
-      list.push(paint(jitter(loft([{ z: z0 - 5.4, y: 0.4, rx: w1 * 0.97, ry: h1 * 0.95, rb: 2.6 }, { z: z0, y: 0.5, rx: PW[i], ry: PH[i], rb: 2.9 }], 8), 0.2, 20 + i), plate(i % 2 ? shell : shellDk), 0.06));
+      list.push(paint(jitter(loft([{ z: z0 - 5.4, y: 0.4, rx: w1 * 0.97, ry: h1 * 0.95, rb: 2.6 }, { z: z0, y: 0.5, rx: PW[i], ry: PH[i], rb: 2.9 }], 8), 0.2, 20 + i), plate(i % 2 ? shell2 : shellDk), 0.06));
     }
     list.push(paint(xf(gBox(17, 0.5, 2.6), 0, 5.75, 11, 0, 0.18, 0), c3("k-crimson"), 0.05), paint(xf(gBox(3.2, 0.5, 2.2), -3.8, 5.9, 6.4, 0, -0.3, 0), c3("k-crimson"), 0.05));
     list.push(paint(xf(gCyl(0.38, 0.38, 8, 4), 5.2, 9, -3.5, 0.5, 0, -0.5), c3("k-wood-1"), 0.05), paint(xf(gBox(0.2, 2, 1.7), 7.1, 12.1, -5.3, 0.5, 0, -0.5), c3("k-crimson"), 0.03));
@@ -9341,24 +9983,24 @@ h3 {
     const FWD = [0.62, 0.22, -0.2, -0.66], legs = [];
     for (const s of [1, -1]) for (let i = 0; i < 4; i++) {
       const hip = grp(body, s * 8.6, -1, 12.5 - i * 5.4, "YXZ");
-      add(hip, [paint(bone([0, 0, 0], [s * 8.4, 6, 0], 1.6, 1.25), shellDk, 0.06), paint(xf(gOct(1.7), s * 8.4, 6, 0), joint, 0.05)]);
+      add(hip, [paint(bone2([0, 0, 0], [s * 8.4, 6, 0], 1.6, 1.25), shellDk, 0.06), paint(xf(gOct(1.7), s * 8.4, 6, 0), joint, 0.05)]);
       const knee = grp(hip, s * 8.4, 6, 0);
-      add(knee, [paint(bone([0, 0, 0], [s * 5.6, -8.2, 0], 1.3, 0.95), shell, 0.06), paint(bone([s * 5.6, -8.2, 0], [s * 8.8, -14.3, 0], 0.95, 0.3), tip, 0.05)]);
+      add(knee, [paint(bone2([0, 0, 0], [s * 5.6, -8.2, 0], 1.3, 0.95), shell2, 0.06), paint(bone2([s * 5.6, -8.2, 0], [s * 8.8, -14.3, 0], 0.95, 0.3), tip, 0.05)]);
       legs.push({ hip, knee, s, i, fwd: FWD[i], off: (i + (s > 0 ? 0 : 1)) % 2 * P2 });
     }
     function claw(s) {
       const sh = grp(body, s * 8.6, -0.4, 15, "YXZ");
       add(sh, [paint(loft([{ z: 0, rx: 2.1, ry: 1.9 }, { z: 3.6, rx: 2.7, ry: 2.3 }, { z: 7, rx: 2.1, ry: 1.9 }], 6), shellDk, 0.06), paint(xf(gOct(2.1), 0, 0, 7), joint, 0.05)]);
       const el2 = grp(sh, 0, 0, 7, "YXZ");
-      add(el2, [paint(loft([{ z: 0, rx: 2.2, ry: 2 }, { z: 3.4, rx: 2.9, ry: 2.5 }, { z: 6.5, rx: 2.4, ry: 2.1 }], 6), shell, 0.06), paint(xf(gOct(2), 0, 0, 6.5), joint, 0.05)]);
+      add(el2, [paint(loft([{ z: 0, rx: 2.2, ry: 2 }, { z: 3.4, rx: 2.9, ry: 2.5 }, { z: 6.5, rx: 2.4, ry: 2.1 }], 6), shell2, 0.06), paint(xf(gOct(2), 0, 0, 6.5), joint, 0.05)]);
       const hand = grp(el2, 0, 0, 6.5, "YXZ");
       add(hand, [
-        paint(jitter(loft([{ z: 0, rx: 2.9, ry: 2.5 }, { z: 3.6, x: s * 0.6, rx: 5.2, ry: 3.6 }, { z: 7.4, x: s * 1, rx: 4.4, ry: 3 }], 7), 0.2, 3), plate(shell), 0.06),
+        paint(jitter(loft([{ z: 0, rx: 2.9, ry: 2.5 }, { z: 3.6, x: s * 0.6, rx: 5.2, ry: 3.6 }, { z: 7.4, x: s * 1, rx: 4.4, ry: 3 }], 7), 0.2, 3), plate(shell2), 0.06),
         paint(loft([{ z: 7, x: s * 2.9, rx: 2.3, ry: 2.3 }, { z: 11.5, x: s * 3.3, rx: 1.6, ry: 1.7 }, { z: 15.5, x: s * 2.3, rx: 0.9, ry: 1 }, { z: 18, x: s * 1, rx: 0.15, ry: 0.15 }], 6), (x, y, z) => z > 14.5 ? tip : shellDk, 0.05)
       ]);
-      const fin = grp(hand, -s * 1.9, 0, 7, "YXZ");
-      add(fin, [paint(loft([{ z: 0, rx: 1.9, ry: 1.9 }, { z: 4.4, x: -s * 0.5, rx: 1.4, ry: 1.5 }, { z: 8, x: s * 0.2, rx: 0.8, ry: 0.9 }, { z: 10.4, x: s * 1, rx: 0.15, ry: 0.15 }], 6), (x, y, z) => z > 7 ? tip : shell, 0.05)]);
-      return { sh, el: el2, hand, fin, s };
+      const fin2 = grp(hand, -s * 1.9, 0, 7, "YXZ");
+      add(fin2, [paint(loft([{ z: 0, rx: 1.9, ry: 1.9 }, { z: 4.4, x: -s * 0.5, rx: 1.4, ry: 1.5 }, { z: 8, x: s * 0.2, rx: 0.8, ry: 0.9 }, { z: 10.4, x: s * 1, rx: 0.15, ry: 0.15 }], 6), (x, y, z) => z > 7 ? tip : shell2, 0.05)]);
+      return { sh, el: el2, hand, fin: fin2, s };
     }
     const clawL = claw(1), clawR = claw(-1);
     const tail = [];
@@ -9368,7 +10010,7 @@ h3 {
     for (let i = 0; i < 5; i++) {
       const r0 = 3.5 - i * 0.22, r1 = 3.3 - i * 0.22, h0 = 3 - i * 0.16;
       const seg = [
-        paint(jitter(loft([{ z: -TL, rx: r1 * 0.86, ry: h0 * 0.86 }, { z: -TL * 0.45, rx: r0 * 1.06, ry: h0 * 1.08 }, { z: 0, rx: r0 * 0.9, ry: h0 * 0.9 }], 6, 0.5), 0.15, 40 + i), plate(i % 2 ? shell : shellDk), 0.06),
+        paint(jitter(loft([{ z: -TL, rx: r1 * 0.86, ry: h0 * 0.86 }, { z: -TL * 0.45, rx: r0 * 1.06, ry: h0 * 1.08 }, { z: 0, rx: r0 * 0.9, ry: h0 * 0.9 }], 6, 0.5), 0.15, 40 + i), plate(i % 2 ? shell2 : shellDk), 0.06),
         paint(xf(gOct(1.9 - i * 0.1), 0, 0, -TL, 0, 0, 0, 1.3, 1, 0.8), joint, 0.05)
       ];
       if (i === 0) seg.push(paint(xf(gCyl(4.4, 4.4, 1.7, 8), 0, 0, -3.4, P2 / 2), (x, y, z, ny, nx, nz) => Math.abs(nz) > 0.5 ? iron : ironHi, 0.06), paint(xf(gBox(0.9, 3.4, 2.4), 0, -5.6, -3.4), ironHi, 0.05), paint(xf(gBox(2.4, 3, 0.9), 0, -8.2, -3.4), iron, 0.05));
@@ -9555,7 +10197,7 @@ h3 {
   var archerRig = (() => {
     const mat2 = charMat(), glowMat = new T3.MeshBasicMaterial({ color: 16777215, fog: false, toneMapped: false });
     const boneC = c3("k-a-bone"), boneDk = c3("k-a-bone-dk"), cloth = c3("k-a-cloth"), clothDk = c3("k-a-cloth-dk"), leather = c3("k-h-leather"), wood = c3("k-wood-2"), iron = c3("k-iron-hi"), glowLo = c3("k-a-glow-lo"), glowHi = c3("k-a-glow");
-    const dark = lin("#15110f"), AS = 0.96, LEG = 10.5;
+    const dark = lin("#15110f"), AS = 0.96, LEG2 = 10.5;
     const root3 = grp(scene), rig = grp(root3);
     rig.scale.setScalar(AS);
     const hips = grp(rig, 0, 24.5, 0, "YXZ");
@@ -9564,7 +10206,7 @@ h3 {
       parent.add(m);
       return m;
     };
-    const bn = (p0, p1, r0, r1) => paint(bone(p0, p1, r0, r1 === void 0 ? r0 : r1, 5), (x, y, z, ny) => ny < -0.3 ? boneDk : boneC, 0.05);
+    const bn = (p0, p1, r0, r1) => paint(bone2(p0, p1, r0, r1 === void 0 ? r0 : r1, 5), (x, y, z, ny) => ny < -0.3 ? boneDk : boneC, 0.05);
     const knob = (x, y, z, r) => paint(xf(gOct(r), x, y, z), boneDk, 0.05);
     add(hips, [
       paint(loft([{ z: -2.4, y: 0.4, rx: 3.4, ry: 2.4 }, { z: 0, y: 0, rx: 5.2, ry: 2.9 }, { z: 2.4, y: 0.4, rx: 3.4, ry: 2.2 }], 6), (x, y) => y < -0.8 ? boneDk : boneC, 0.05),
@@ -9580,10 +10222,10 @@ h3 {
     });
     function leg(s) {
       const th = grp(hips, s * 3.4, -1, 0);
-      add(th, [bn([0, 0, 0], [0, -LEG, 0], 1.15, 0.95), knob(0, -LEG, 0.2, 1.5)]);
-      const kn = grp(th, 0, -LEG, 0);
-      add(kn, [bn([0.5, 0, 0], [0.4, -LEG, 0], 0.85, 0.7), bn([-0.6, -0.5, 0], [-0.4, -LEG, 0], 0.55, 0.5)]);
-      const ft = grp(kn, 0, -LEG, 0);
+      add(th, [bn([0, 0, 0], [0, -LEG2, 0], 1.15, 0.95), knob(0, -LEG2, 0.2, 1.5)]);
+      const kn = grp(th, 0, -LEG2, 0);
+      add(kn, [bn([0.5, 0, 0], [0.4, -LEG2, 0], 0.85, 0.7), bn([-0.6, -0.5, 0], [-0.4, -LEG2, 0], 0.55, 0.5)]);
+      const ft = grp(kn, 0, -LEG2, 0);
       add(ft, [paint(loft([{ z: -2, y: -1.2, rx: 1.5, ry: 1.1 }, { z: 2, y: -1.4, rx: 1.8, ry: 1 }, { z: 5.4, y: -1.9, rx: 1.5, ry: 0.5 }], 5, 0.5), (x, y, z, ny) => ny < -0.3 ? boneDk : boneC, 0.05)]);
       return { th, kn, ft };
     }
@@ -9651,12 +10293,12 @@ h3 {
     const armL = arm(1), armR = arm(-1);
     const bow = grp(armL.hd, 0, -1.3, 0), TIP = 14, SY = 3.6;
     add(bow, [
-      paint(bone([0, 0, -2.4], [0, 0, 2.4], 1, 1, 6), leather, 0.06),
-      paint(bone([0, 0, 2.2], [0, 1, 8.5], 0.9, 0.7), wood, 0.06),
-      paint(bone([0, 1, 8.5], [0, SY, TIP], 0.7, 0.35), wood, 0.06),
+      paint(bone2([0, 0, -2.4], [0, 0, 2.4], 1, 1, 6), leather, 0.06),
+      paint(bone2([0, 0, 2.2], [0, 1, 8.5], 0.9, 0.7), wood, 0.06),
+      paint(bone2([0, 1, 8.5], [0, SY, TIP], 0.7, 0.35), wood, 0.06),
       paint(xf(gOct(0.8), 0, SY, TIP, 0, 0, 0, 1, 1, 1.5), boneC, 0.04),
-      paint(bone([0, 0, -2.2], [0, 1, -8.5], 0.9, 0.7), wood, 0.06),
-      paint(bone([0, 1, -8.5], [0, SY, -TIP], 0.7, 0.35), wood, 0.06),
+      paint(bone2([0, 0, -2.2], [0, 1, -8.5], 0.9, 0.7), wood, 0.06),
+      paint(bone2([0, 1, -8.5], [0, SY, -TIP], 0.7, 0.35), wood, 0.06),
       paint(xf(gOct(0.8), 0, SY, -TIP, 0, 0, 0, 1, 1, 1.5), boneC, 0.04)
     ]);
     const strGeo = new T3.BufferGeometry();
@@ -9858,7 +10500,7 @@ h3 {
         re = lerp(re, 0.9, fall);
         lt = lerp(lt, 0.4, fall);
       }
-      const reach2 = Math.max(LEG * Math.cos(lth) + LEG * Math.cos(lth - lkn), LEG * Math.cos(rth) + LEG * Math.cos(rth - rkn));
+      const reach2 = Math.max(LEG2 * Math.cos(lth) + LEG2 * Math.cos(lth - lkn), LEG2 * Math.cos(rth) + LEG2 * Math.cos(rth - rkn));
       const by = lerp(reach2 + 2.4 + 1 - drop * 0.35 + Math.abs(c1) * 0.8 * m, 4.6, fall) + jump;
       root3.position.set(b.x, 0, b.y);
       root3.rotation.y = yaw;
@@ -9932,7 +10574,7 @@ h3 {
   })();
 
   // src/render/rigs/goblin.js
-  var C3 = C;
+  var C4 = C;
   function makeGoblinRig(kind) {
     const R = makeHeroRig(kind), M = MON[kind];
     R.root.visible = false;
@@ -9943,7 +10585,7 @@ h3 {
       const wind = b.mode === "cleave" ? M.cleaveWind : b.wind || M.swipeWindup;
       const overhead = b.mode === "cleave" || b.mode === "swipe" && !SIDE && !THRUST, sideSwing = (SIDE || THRUST) && (b.mode === "swipe" || b.mode === "combo");
       if (st.prev === "cleave" || st.prev === "swipe" && !SIDE) {
-        if (b.mode !== st.prev && b.mode !== "stagger") st.smash = C3.SWING_HEAVY;
+        if (b.mode !== st.prev && b.mode !== "stagger") st.smash = C4.SWING_HEAVY;
       }
       if ((SIDE || THRUST) && (st.prev === "swipe" || st.prev === "combo") && b.mode !== st.prev && b.mode !== "stagger") st.follow = FOLLOW;
       st.prev = b.mode;
@@ -9958,7 +10600,7 @@ h3 {
         const w = b.mode === "combo" ? M.comboWind : wind, k = 1 - Math.max(0, b.t) / w;
         sp = k < 0.8 ? PULL * (k / 0.8) : PULL + (HIT - PULL) * ((k - 0.8) / 0.2);
       } else if (st.follow > 0) sp = HIT + (1 - HIT) * (1 - st.follow / FOLLOW);
-      const swing = sp >= 0 ? { swingT: 1 - sp, heavySwing: false, swDur: 1 } : { swingT: st.smash, heavySwing: st.smash > 0, swDur: C3.SWING_HEAVY };
+      const swing = sp >= 0 ? { swingT: 1 - sp, heavySwing: false, swDur: 1 } : { swingT: st.smash, heavySwing: st.smash > 0, swDur: C4.SWING_HEAVY };
       R.update({
         x: b.x,
         y: b.y,
@@ -9972,7 +10614,7 @@ h3 {
         wpn: THRUST ? "spear" : "club",
         potions: b.potions,
         drink: b.mode === "drink",
-        chargeT: overhead ? Math.max(1e-3, b.t) * C3.STRIKE_WINDUP / wind : 0,
+        chargeT: overhead ? Math.max(1e-3, b.t) * C4.STRIKE_WINDUP / wind : 0,
         chargeKind: "strike",
         glow: b.mode === "cleave" ? Math.min(1, 1 - b.t / wind + 0.3) : 0,
         ...swing,
@@ -9987,7 +10629,7 @@ h3 {
         fall: b.fall || 0
       }, t);
     }
-    return { root: R.root, update, a: R.a, kickHit(pow) {
+    return { root: R.root, update, a: R.a, hr: R, kickHit(pow) {
       R.a.hurt.v += 6 * pow;
     } };
   }
@@ -10450,7 +11092,7 @@ h3 {
     };
   }
   var D = makeDecals();
-  function updDecals(h, b, t, mk, DD = D) {
+  function updDecals(h, b, t, mk2, DD = D) {
     const hAir = h.jumpT > 0 ? Math.sin(clampv(1 - h.jumpT / C2.JUMP_TIME, 0, 1) * P2) : 0, shK = 11 * (1 - 0.35 * hAir);
     DD.shH.visible = DD.shM.visible = true;
     DD.shH.position.set(h.x, DY - 0.9, h.y);
@@ -10544,9 +11186,9 @@ h3 {
       DD.aura.scale.set(r, 1, r);
       DD.aura.material.opacity = 0.3 + 0.2 * Math.sin(t * 25);
     }
-    DD.markDisc.visible = DD.markRim.visible = !!mk;
-    if (mk) {
-      const col = c3(mk.sign > 0 ? "num-praise" : "num-punish"), pu = 0.5 + 0.5 * Math.sin(t * 8), r = 24 + 3 * pu;
+    DD.markDisc.visible = DD.markRim.visible = !!mk2;
+    if (mk2) {
+      const col = c3(mk2.sign > 0 ? "num-praise" : "num-punish"), pu = 0.5 + 0.5 * Math.sin(t * 8), r = 24 + 3 * pu;
       for (const m of [DD.markDisc, DD.markRim]) {
         m.material.color.copy(col);
         m.position.set(h.x, DY - 0.4, h.y);
@@ -10630,9 +11272,9 @@ h3 {
     }
     return best;
   }
-  function drawMarkStamp(mk, h, t) {
-    const good = mk.sign > 0, col = COL[good ? "num-praise" : "num-punish"];
-    const age = Math.max(0, game.rp.t - mk.t0), fade = Math.max(0, Math.min(1, (mk.end - game.rp.t) / 0.15));
+  function drawMarkStamp(mk2, h, t) {
+    const good = mk2.sign > 0, col = COL[good ? "num-praise" : "num-punish"];
+    const age = Math.max(0, game.rp.t - mk2.t0), fade = Math.max(0, Math.min(1, (mk2.end - game.rp.t) / 0.15));
     const pop2 = 1 + 0.45 * Math.max(0, 1 - age / 0.22);
     const sc = Math.min(1, 0.7 + S2 * 0.12), hh = 32, base = proj(h.x, h.y, 62);
     let y = base.y - 38 * sc;
@@ -10694,8 +11336,8 @@ h3 {
   var _td = null;
   var THUMB_UP_PATH = () => _tu || (_tu = new Path2D(THUMB_UP_D));
   var THUMB_DOWN_PATH = () => _td || (_td = new Path2D(THUMB_DOWN_D));
-  function drawMarkFrame(mk) {
-    const col = COL[mk.sign > 0 ? "num-praise" : "num-punish"], fade = Math.max(0, Math.min(1, (mk.end - game.rp.t) / 0.15));
+  function drawMarkFrame(mk2) {
+    const col = COL[mk2.sign > 0 ? "num-praise" : "num-punish"], fade = Math.max(0, Math.min(1, (mk2.end - game.rp.t) / 0.15));
     ctx.save();
     ctx.globalAlpha = 0.9 * fade;
     ctx.strokeStyle = col;
@@ -10886,12 +11528,12 @@ h3 {
     if (game.phase === "insight" && game.insight) ({ h, b } = insightView(h, b));
     if (dbgView) ({ h, b } = dbgView(h, b));
     game.crowdHype = game.tailScene ? game.rec.result === "lose" ? 0.5 : 2.6 : !game.cine || game.phase !== "live" ? 1 : game.cine.kind === "lose" ? 0.5 : 2.6;
-    const mk = activeMark();
+    const mk2 = activeMark();
     if ((game.phase === "review" || game.phase === "taught") && game.rec) replayFlash();
     heroRig.update(h, t);
     monRig.update(b, t);
     drawShots(quiet() ? [] : cv0.ar, t);
-    updDecals(h, b, t, mk);
+    updDecals(h, b, t, mk2);
     updStage(t, rdt);
     updFx(rdt * Math.max(1, game.phase === "review" ? Math.abs(game.rp && game.rp.rate || 1) : SPEEDS[game.speedIdx].v), t, b);
     applyCam(dbgCam || game.camOverride || camWant(h, b, t));
@@ -10951,8 +11593,8 @@ h3 {
     drawParticles();
     if ((game.phase === "review" || game.phase === "taught") && game.rec && !game.tailScene) drawReplayHits();
     hudFrame(h, b);
-    if (mk) drawMarkStamp(mk, h, t);
-    if (mk) drawMarkFrame(mk);
+    if (mk2) drawMarkStamp(mk2, h, t);
+    if (mk2) drawMarkFrame(mk2);
     if (game.cine && game.phase === "live") drawCine();
     else if (game.tailScene && game.rec.result) drawCine({ kind: game.rec.result, t: cv0.tail });
     if (game.phase === "review" && !game.sheet) drawReplayTag(t);
@@ -11497,13 +12139,13 @@ h3 {
 
   // src/audio/bgm.js
   var SRC = window.__BGM__ || "bgm.mp3";
-  var BASE = 0.22;
-  var VOL = BASE;
+  var BASE2 = 0.22;
+  var VOL = BASE2;
   var el = null;
   var want = false;
   var raf = 0;
   function setBgmVolume(v) {
-    VOL = BASE * v;
+    VOL = BASE2 * v;
     if (!el) return;
     if (VOL <= 0) {
       el.pause();
@@ -11610,8 +12252,8 @@ h3 {
   // src/ui/prep.js
   var G3 = GEAR;
   var SLOTS = [["atk", 0, "평타"], ["grd", 0, "방어"], ["ddg", 0, "이동기"], ["act", 0, "액티브 1"], ["act", 1, "액티브 2"], ["pas", 0, "패시브"]];
-  var BASE2 = { atk: ["sword"], grd: ["wood"] };
-  var isOpen2 = (slot, id) => (BASE2[slot] || []).includes(id) || S.got.includes(id);
+  var BASE3 = { atk: ["sword"], grd: ["wood"] };
+  var isOpen2 = (slot, id) => (BASE3[slot] || []).includes(id) || S.got.includes(id);
   var cur = (slot, i) => slot === "act" ? S.load.act[i] : S.load[slot];
   function lvInfo(id) {
     const xp = S.xp[id] || 0, lv = lvOf(xp), XP2 = LV_XP, max = lv >= XP2.length;
@@ -11756,19 +12398,19 @@ h3 {
       el2.innerHTML = '<div class="empty">재생하거나 진행바를 움직여 제자의 판단을 골라 보세요. 잘한 순간엔 칭찬, 잘못한 순간엔 벌.</div>';
       return;
     }
-    const mk = game.marks.get(game.curDI);
+    const mk2 = game.marks.get(game.curDI);
     el2.innerHTML = `<div class="no"><span>판단 ${game.curDI + 1} / ${rec.decisions.length}</span><span>${d.t.toFixed(1)}초</span></div>
     <div class="act">${game.ACT[d.a]}</div>
     <div class="sit">판단 이유: ${sitName(d.f)}</div>
-    ${resultTag(d)}${mk ? `<span class="mk ${mk > 0 ? "p" : "n"}">${mk > 0 ? "잘했어" : "아니야"}</span>` : ""}`;
+    ${resultTag(d)}${mk2 ? `<span class="mk ${mk2 > 0 ? "p" : "n"}">${mk2 > 0 ? "잘했어" : "아니야"}</span>` : ""}`;
   }
   function renderJudge() {
-    const { left } = markCounts(), mk = game.curDI >= 0 ? game.marks.get(game.curDI) : void 0;
+    const { left } = markCounts(), mk2 = game.curDI >= 0 ? game.marks.get(game.curDI) : void 0;
     const can = game.phase === "review" && !game.sheet && game.curDI >= 0 && !inEndScene();
     $("praiseBtn").disabled = $("punishBtn").disabled = !can;
-    $("praiseBtn").classList.toggle("on", can && mk === 1);
-    $("punishBtn").classList.toggle("on", can && mk === -1);
-    const pk = can && mk === 1 ? "on" : "", nk = can && mk === -1 ? "on" : "";
+    $("praiseBtn").classList.toggle("on", can && mk2 === 1);
+    $("punishBtn").classList.toggle("on", can && mk2 === -1);
+    const pk = can && mk2 === 1 ? "on" : "", nk = can && mk2 === -1 ? "on" : "";
     if ($("praiseBtn").dataset.k !== pk) {
       $("praiseBtn").dataset.k = pk;
       $("praiseBtn").innerHTML = `${THUMB_UP}<span>잘했어${pk ? " ✓" : ""}</span>`;
@@ -11793,24 +12435,24 @@ h3 {
   var winW = () => zoomed() ? WIN : game.rec && game.rec.T || WIN;
   var pct = (t) => ((t - ws) / winW() * 100).toFixed(2) + "%";
   function placeWindow() {
-    const rec = game.rec, T = rec.T || 1, W2 = winW(), t = game.rp.t;
+    const rec = game.rec, T4 = rec.T || 1, W2 = winW(), t = game.rp.t;
     if (!freeze) {
       if (t < ws || t > ws + W2) ws = t - W2 / 2;
       else if (game.rp.playing && t > ws + W2 * 0.85) ws = t - W2 * 0.85;
     }
-    ws = Math.max(0, Math.min(T - W2, ws));
+    ws = Math.max(0, Math.min(T4 - W2, ws));
   }
   function renderMarks() {
     const rec = game.rec;
     if (!rec) return;
-    const T = rec.T || 1, W2 = winW(), inWin = (t) => t >= ws - 0.3 && t <= ws + W2 + 0.3;
+    const T4 = rec.T || 1, W2 = winW(), inWin = (t) => t >= ws - 0.3 && t <= ws + W2 + 0.3;
     const ticks = rec.decisions.map((d, i) => inWin(d.t) ? `<span class="tick${d.ok === true ? " ok" : d.ok === false ? " fail" : ""}${i === game.curDI ? " cur" : ""}" data-i="${i}" style="left:${pct(d.t)}"></span>` : "").join("");
     const marks = [...game.marks.entries()].map(([di, s]) => inWin(rec.decisions[di].t) ? `<button type="button" class="${s > 0 ? "p" : "n"}${di === game.curDI ? " cur" : ""}" data-di="${di}" style="left:${pct(rec.decisions[di].t)}" aria-label="${s > 0 ? "잘했어" : "아니야"} 준 장면으로">${s > 0 ? "+" : "−"}</button>` : "").join("");
     $("tlMarks").innerHTML = ticks + marks;
     const tl = (rec.TM - ws) / W2;
     $("tlTail").style.left = Math.max(0, Math.min(100, tl * 100)) + "%";
     $("tlTail").hidden = tl >= 1;
-    $("tlOvMarks").innerHTML = [...game.marks.entries()].map(([di, s]) => `<i class="${s > 0 ? "p" : "n"}" style="left:${(rec.decisions[di].t / T * 100).toFixed(2)}%"></i>`).join("");
+    $("tlOvMarks").innerHTML = [...game.marks.entries()].map(([di, s]) => `<i class="${s > 0 ? "p" : "n"}" style="left:${(rec.decisions[di].t / T4 * 100).toFixed(2)}%"></i>`).join("");
     drawnWs = ws;
   }
   var EDGE = 0.1;
@@ -11821,10 +12463,10 @@ h3 {
     if (!dragging || !game.rec) return;
     const dt = Math.min(0.05, (now - lastPan) / 1e3);
     lastPan = now;
-    const v = Number($("tlRange").value) / 1e3, T = game.rec.T, W2 = winW();
+    const v = Number($("tlRange").value) / 1e3, T4 = game.rec.T, W2 = winW();
     const k = v > 1 - EDGE ? (v - (1 - EDGE)) / EDGE : v < EDGE ? -(EDGE - v) / EDGE : 0;
-    if (k && W2 < T) {
-      const nws = Math.max(0, Math.min(T - W2, ws + k * PAN * dt));
+    if (k && W2 < T4) {
+      const nws = Math.max(0, Math.min(T4 - W2, ws + k * PAN * dt));
       if (nws !== ws) {
         ws = nws;
         seek(ws + v * W2);
@@ -11835,15 +12477,15 @@ h3 {
   function renderTimeline() {
     const rec = game.rec;
     if (!rec) return;
-    const T = rec.T || 1, W2 = winW(), t = game.rp.t;
+    const T4 = rec.T || 1, W2 = winW(), t = game.rp.t;
     placeWindow();
     if (Math.abs(ws - drawnWs) > 0.01) renderMarks();
     $("tlProg").style.width = Math.max(0, Math.min(100, (t - ws) / W2 * 100)).toFixed(2) + "%";
-    $("tlOvProg").style.width = (t / T * 100).toFixed(2) + "%";
-    $("tlOvWin").style.left = (ws / T * 100).toFixed(2) + "%";
-    $("tlOvWin").style.width = (W2 / T * 100).toFixed(2) + "%";
+    $("tlOvProg").style.width = (t / T4 * 100).toFixed(2) + "%";
+    $("tlOvWin").style.left = (ws / T4 * 100).toFixed(2) + "%";
+    $("tlOvWin").style.width = (W2 / T4 * 100).toFixed(2) + "%";
     if (document.activeElement !== $("tlRange")) $("tlRange").value = Math.round(Math.max(0, Math.min(1, (t - ws) / W2)) * 1e3);
-    if (document.activeElement !== $("tlOver")) $("tlOver").value = Math.round(t / T * 1e3);
+    if (document.activeElement !== $("tlOver")) $("tlOver").value = Math.round(t / T4 * 1e3);
     $("tlTime").textContent = `${mmss(Math.min(t, rec.TM))} / ${mmss(rec.TM)}`;
   }
   function renderPlayer() {
@@ -12649,6 +13291,9 @@ h3 {
   if (/[?&]debug\b/.test(location.search)) {
     window.__game = game;
     window.__heroRig = heroRig;
+    window.__RIGS = RIGS;
+    window.__ARENA = sim_exports;
+    window.__S = S;
   }
   initPrep();
   initReplay(on);

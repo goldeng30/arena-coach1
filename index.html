@@ -1390,6 +1390,7 @@ h3 {
   opacity: 0;
   cursor: pointer;
   z-index: 3;
+  touch-action: none;
 }
 .tl-dec,
 .tl-prog,
@@ -1482,6 +1483,7 @@ h3 {
   margin: 0;
   opacity: 0;
   cursor: pointer;
+  touch-action: none;
 }
 .timeline .time {
   font-family: var(--f-mono);
@@ -3023,6 +3025,7 @@ h3 {
   flex: 1;
   min-width: 0;
   accent-color: var(--ui-gold);
+  touch-action: none;
 }
 .set-row input[type=range]:disabled {
   opacity: .35;
@@ -6061,6 +6064,41 @@ h3 {
     const r = localRect({ left: x, top: y, right: x, bottom: y });
     return { x: r.left, y: r.top };
   };
+  function scrub(el2) {
+    let id = null;
+    const set = (e) => {
+      const r = localRect(el2.getBoundingClientRect()), p = localPoint(e.clientX, e.clientY);
+      const lo = Number(el2.min || 0), hi = Number(el2.max || 100), st = Number(el2.step) || 1, f = Math.max(0, Math.min(1, (p.x - r.left) / (r.width || 1)));
+      const v = Math.min(hi, lo + Math.round(f * (hi - lo) / st) * st);
+      if (Number(el2.value) !== v) {
+        el2.value = v;
+        el2.dispatchEvent(new Event("input", { bubbles: true }));
+      }
+    };
+    el2.addEventListener("pointerdown", (e) => {
+      if (el2.disabled || e.button > 0) return;
+      e.preventDefault();
+      id = e.pointerId;
+      try {
+        el2.setPointerCapture(id);
+      } catch (_) {
+      }
+      set(e);
+    });
+    el2.addEventListener("pointermove", (e) => {
+      if (e.pointerId === id) set(e);
+    });
+    const end = (e) => {
+      if (e.pointerId !== id) return;
+      id = null;
+      el2.dispatchEvent(new Event("change", { bubbles: true }));
+    };
+    el2.addEventListener("pointerup", end);
+    el2.addEventListener("pointercancel", end);
+    for (const ev of ["touchstart", "touchmove"]) el2.addEventListener(ev, (e) => {
+      if (e.cancelable) e.preventDefault();
+    }, { passive: false });
+  }
 
   // src/render/scene.js
   var T3 = THREE;
@@ -11895,6 +11933,8 @@ h3 {
     $("tlRange").addEventListener("input", (e) => {
       if (game.rec) seek(ws + Number(e.target.value) / 1e3 * winW());
     });
+    scrub($("tlRange"));
+    scrub($("tlOver"));
     $("tlOver").addEventListener("input", (e) => {
       if (!game.rec) return;
       const t = Number(e.target.value) / 1e3 * game.rec.T;
@@ -12463,6 +12503,7 @@ h3 {
       apply();
       save();
     });
+    scrub($("volRange"));
     $("muteBtn").addEventListener("click", () => {
       snd.mute = !snd.mute;
       apply();
